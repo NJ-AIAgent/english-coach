@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>English Coach</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1c25;
+    --surface2: #232530;
+    --accent: #22c55e;
+    --accent-dim: rgba(34,197,94,0.12);
+    --accent-mid: rgba(34,197,94,0.25);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --text: #e8e8ed;
+    --text2: #9395a5;
+    --text3: #5d5f6e;
+    --border: #2a2c3a;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .app {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 6rem;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-top: 0.5rem;
+  }
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, #22c55e, #4ade80);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header p {
+    color: var(--text2);
+    font-size: 0.85rem;
+  }
+
+  /* Setup Screen */
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .setup-card label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .setup-card input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', monospace;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .setup-card input:focus {
+    border-color: var(--accent);
+  }
+  .setup-card .hint {
+    font-size: 0.75rem;
+    color: var(--text3);
+    margin-top: 0.5rem;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #16a34a; }
+  .btn-primary:disabled {
+    background: var(--surface2);
+    color: var(--text3);
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--border); }
+
+  /* Current Focus Card */
+  .focus-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .focus-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .focus-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .focus-meta {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .meta-item .meta-label {
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .meta-item .meta-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .streak-dots {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    margin-top: 0.15rem;
+  }
+  .streak-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1.5px solid var(--text3);
+  }
+  .streak-dot.filled {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Scenario Box */
+  .scenario-box {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-mid);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .scenario-box .scene-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+  .scenario-box p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  /* Mic Section */
+  .mic-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+    margin-bottom: 1rem;
+  }
+  .mic-btn {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: var(--accent-dim);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mic-btn:hover { background: var(--accent-mid); }
+  .mic-btn.recording {
+    border-color: var(--red);
+    background: var(--red-dim);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+    50% { box-shadow: 0 0 0 18px rgba(239,68,68,0); }
+  }
+  .mic-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text2);
+    margin-bottom: 0.5rem;
+  }
+  .mic-status.live { color: var(--red); }
+  .mic-timer {
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Transcript Box */
+  .transcript-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    min-height: 100px;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  .transcript-box .t-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .transcript-box .t-content {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .transcript-box .t-content.placeholder {
+    color: var(--text3);
+    font-style: italic;
+  }
+  .interim-text {
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  /* Loading */
+  .analyzing {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  .analyzing .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--surface2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .analyzing p {
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+
+  /* Results */
+  .results-section {
+    margin-bottom: 1.5rem;
+  }
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .score-big {
+    font-family: 'Fraunces', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .score-big.high { color: var(--accent); }
+  .score-big.mid { color: var(--amber); }
+  .score-big.low { color: var(--red); }
+  .score-label {
+    font-size: 0.8rem;
+    color: var(--text2);
+  }
+
+  .correction-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    margin-bottom: 0.75rem;
+  }
+  .correction-card .c-num {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+  }
+  .correction-card .c-wrong {
+    color: var(--red);
+    font-size: 0.88rem;
+    text-decoration: line-through;
+    margin-bottom: 0.3rem;
+    line-height: 1.5;
+  }
+  .correction-card .c-right {
+    color: var(--accent);
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  .correction-card .c-rule {
+    color: var(--text2);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: 0.6rem;
+    background: var(--surface2);
+    border-radius: 8px;
+  }
+
+  .positive-card {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-mid);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    margin-bottom: 1.25rem;
+  }
+  .positive-card .p-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+  .positive-card p {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* Patterns (Assessment) */
+  .patterns-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .patterns-card .pat-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .pattern-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pattern-item:last-child { border-bottom: none; }
+  .pattern-item .pat-name {
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+  .pattern-item .pat-freq {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+  }
+  .pat-freq.high-freq { background: var(--red-dim); color: var(--red); }
+  .pat-freq.mid-freq { background: var(--amber-dim); color: var(--amber); }
+  .pat-freq.low-freq { background: var(--accent-dim); color: var(--accent); }
+
+  /* Homework */
+  .homework-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .homework-card .hw-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+  .homework-card .hw-item {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .homework-card .hw-item:last-child { border-bottom: none; }
+
+  /* Button Row */
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .btn-row .btn { flex: 1; }
+
+  /* Screens */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: var(--text);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>🎯 English Coach</h1>
+    <p id="headerSub">AI-powered grammar coaching</p>
+  </div>
+
+  <!-- SCREEN: Setup -->
+  <div class="screen active" id="setupScreen">
+    <div class="setup-card">
+      <label>Claude API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off">
+      <p class="hint">Stored locally in your browser. Never sent anywhere except Anthropic's API.</p>
+    </div>
+    <button class="btn btn-primary" id="startBtn" onclick="saveKeyAndStart()">Start Coaching →</button>
+  </div>
+
+  <!-- SCREEN: Practice -->
+  <div class="screen" id="practiceScreen">
+    <!-- Focus Card -->
+    <div class="focus-card" id="focusCard">
+      <div class="focus-label" id="focusLabel">Session 1 — Assessment</div>
+      <div class="focus-title" id="focusTitle">Speak freely on any topic</div>
+      <div class="focus-meta" id="focusMeta"></div>
+    </div>
+
+    <!-- Scenario -->
+    <div class="scenario-box" id="scenarioBox">
+      <div class="scene-label">Today's Prompt</div>
+      <p id="scenarioText">Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?</p>
+    </div>
+
+    <!-- Mic -->
+    <div class="mic-section">
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙️</button>
+      <div class="mic-status" id="micStatus">Tap to start speaking</div>
+      <div class="mic-timer" id="micTimer"></div>
+    </div>
+
+    <!-- Transcript -->
+    <div class="transcript-box" id="transcriptBox" style="display:none;">
+      <div class="t-label">Your Speech</div>
+      <div class="t-content" id="transcriptContent"></div>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn btn-primary" id="analyzeBtn" style="display:none;" onclick="analyzeTranscript()">Analyze My Speech →</button>
+  </div>
+
+  <!-- SCREEN: Analyzing -->
+  <div class="screen" id="analyzingScreen">
+    <div class="analyzing">
+      <div class="spinner"></div>
+      <p id="analyzingText">Analyzing your speech patterns...</p>
+    </div>
+  </div>
+
+  <!-- SCREEN: Results -->
+  <div class="screen" id="resultsScreen">
+    <!-- Score -->
+    <div class="score-card" id="scoreCard">
+      <div class="score-big" id="scoreBig">—</div>
+      <div class="score-label" id="scoreLabel">Grammar Score</div>
+    </div>
+
+    <!-- Corrections -->
+    <div id="correctionsContainer"></div>
+
+    <!-- Positive -->
+    <div class="positive-card" id="positiveCard" style="display:none;">
+      <div class="p-label">✓ What you did well</div>
+      <p id="positiveText"></p>
+    </div>
+
+    <!-- Patterns (Assessment only) -->
+    <div class="patterns-card" id="patternsCard" style="display:none;">
+      <div class="pat-title">Weak Areas Detected</div>
+      <div id="patternsList"></div>
+    </div>
+
+    <!-- Homework -->
+    <div class="homework-card" id="homeworkCard" style="display:none;">
+      <div class="hw-title">📝 Homework</div>
+      <div id="homeworkList"></div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="practiceAgain()">Practice Again</button>
+      <button class="btn btn-primary" onclick="nextScenario()">Next Scenario →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== STATE =====
+  let apiKey = '';
+  let recognition = null;
+  let isRecording = false;
+  let finalTranscript = '';
+  let interimTranscript = '';
+  let timerInterval = null;
+  let seconds = 0;
+  let sessionHistory = JSON.parse(localStorage.getItem('ec_sessions') || '[]');
+  let patterns = JSON.parse(localStorage.getItem('ec_patterns') || '[]');
+  let currentPattern = JSON.parse(localStorage.getItem('ec_current_pattern') || 'null');
+  let streakCount = parseInt(localStorage.getItem('ec_streak') || '0');
+  let isAssessment = !currentPattern;
+  let currentScenario = '';
+
+  const ASSESSMENT_PROMPTS = [
+    "Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?",
+    "Describe your typical workday from morning to evening. What do you enjoy most and what would you change?",
+    "Tell me about a skill you learned recently. Why did you want to learn it and how did you go about it?"
+  ];
+
+  const PATTERN_SCENARIOS = {
+    "Tense Mixing": [
+      "Describe what you planned to do last weekend but couldn't finish.",
+      "Tell me about a goal you set last year. Did you achieve it?",
+      "Explain how your daily routine has changed compared to two years ago.",
+      "Tell me about a trip you were planning but had to cancel.",
+      "Describe a project that started well but then hit problems.",
+      "What were you doing at this time yesterday? What will you be doing tomorrow?",
+      "Tell me about something you learned last month that you now use daily.",
+      "Describe your career journey — where you started and where you are now."
+    ],
+    "Missing Articles": [
+      "Describe the room you are sitting in right now. What objects do you see?",
+      "Tell me about the best restaurant you've been to recently.",
+      "Explain how to make a cup of tea or coffee step by step.",
+      "Describe a phone you recently bought or want to buy.",
+      "Tell me about the city you live in. What makes it special?",
+      "Describe a book or movie that left an impression on you.",
+      "Tell me about a gadget or tool you use every day at work.",
+      "Describe the view from your window right now."
+    ],
+    "Plural Errors": [
+      "What are the three most important things in your life and why?",
+      "Tell me about the different types of people you work with.",
+      "Describe all the devices and gadgets you use daily.",
+      "What are some hobbies your friends have? How are they different from yours?",
+      "Tell me about different foods you ate this week.",
+      "Describe the teams and departments in your company.",
+      "What are the biggest challenges facing software developers today?",
+      "Tell me about the different places you have lived."
+    ],
+    "Hindi Filler Words": [
+      "Explain what you do for work to someone who knows nothing about tech.",
+      "Tell me about a difficult decision you had to make recently.",
+      "Describe why you want to improve your English speaking.",
+      "Explain a technical concept — like how the internet works — in simple terms.",
+      "Tell me about your opinion on working from home vs office.",
+      "Describe a disagreement you had and how you resolved it.",
+      "Explain your morning routine and why you designed it that way.",
+      "Tell me about something you're passionate about outside of work."
+    ],
+    "Subject-Verb Agreement": [
+      "Describe what your team does on a typical day.",
+      "Tell me about your family — what does each person do?",
+      "Explain how different apps on your phone help you daily.",
+      "Describe what happens when a customer reports a bug.",
+      "Tell me about your group of friends — what does the group enjoy doing?",
+      "Explain how your company works and what each team handles.",
+      "Describe the news stories everyone is talking about.",
+      "Tell me about the rules or habits that make your life easier."
+    ]
+  };
+
+  // ===== INIT =====
+  function init() {
+    apiKey = localStorage.getItem('ec_api_key') || '';
+    if (apiKey) {
+      document.getElementById('apiKeyInput').value = apiKey;
+      showScreen('practiceScreen');
+      setupPracticeScreen();
+    }
+  }
+
+  // ===== SCREENS =====
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function saveKeyAndStart() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key.startsWith('sk-ant-')) {
+      showToast('Enter a valid API key starting with sk-ant-');
+      return;
+    }
+    apiKey = key;
+    localStorage.setItem('ec_api_key', key);
+    showScreen('practiceScreen');
+    setupPracticeScreen();
+  }
+
+  function setupPracticeScreen() {
+    isAssessment = !currentPattern;
+    
+    if (isAssessment) {
+      document.getElementById('focusLabel').textContent = 'Session 1 — Assessment';
+      document.getElementById('focusTitle').textContent = 'Speak freely so I can find your patterns';
+      document.getElementById('focusMeta').innerHTML = '';
+      document.getElementById('scenarioText').textContent = ASSESSMENT_PROMPTS[Math.floor(Math.random() * ASSESSMENT_PROMPTS.length)];
+    } else {
+      document.getElementById('focusLabel').textContent = `Current Focus`;
+      document.getElementById('focusTitle').textContent = currentPattern;
+      
+      const dots = Array(3).fill(0).map((_, i) => 
+        `<div class="streak-dot ${i < streakCount ? 'filled' : ''}"></div>`
+      ).join('');
+      
+      const lastScore = sessionHistory.length > 0 ? sessionHistory[sessionHistory.length - 1].score : '—';
+      
+      document.getElementById('focusMeta').innerHTML = `
+        <div class="meta-item">
+          <span class="meta-label">Last Score</span>
+          <span class="meta-value">${lastScore}/10</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Streak</span>
+          <div class="streak-dots">${dots}</div>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Sessions</span>
+          <span class="meta-value">${sessionHistory.filter(s => s.pattern === currentPattern).length}</span>
+        </div>
+      `;
+
+      const scenarios = PATTERN_SCENARIOS[currentPattern] || PATTERN_SCENARIOS["Tense Mixing"];
+      currentScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+      document.getElementById('scenarioText').textContent = currentScenario;
+    }
+
+    // Reset mic area
+    document.getElementById('transcriptBox').style.display = 'none';
+    document.getElementById('analyzeBtn').style.display = 'none';
+    document.getElementById('micStatus').textContent = 'Tap to start speaking';
+    document.getElementById('micTimer').textContent = '';
+    document.getElementById('micBtn').classList.remove('recording');
+    finalTranscript = '';
+    interimTranscript = '';
+    seconds = 0;
+  }
+
+  // ===== MIC =====
+  function toggleMic() {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  }
+
+  function startRecording() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      showToast('Speech recognition not supported. Use Chrome.');
+      return;
+    }
+
+    recognition = new SR();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN';
+
+    finalTranscript = '';
+    interimTranscript = '';
+
+    recognition.onstart = () => {
+      isRecording = true;
+      document.getElementById('micBtn').classList.add('recording');
+      document.getElementById('micStatus').textContent = '🔴 Listening...';
+      document.getElementById('micStatus').classList.add('live');
+      document.getElementById('transcriptBox').style.display = 'block';
+      document.getElementById('transcriptContent').classList.remove('placeholder');
+      document.getElementById('analyzeBtn').style.display = 'none';
+      startTimer();
+    };
+
+    recognition.onresult = (e) => {
+      interimTranscript = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          finalTranscript += e.results[i][0].transcript + ' ';
+        } else {
+          interimTranscript += e.results[i][0].transcript;
+        }
+      }
+      document.getElementById('transcriptContent').innerHTML = 
+        finalTranscript + (interimTranscript ? `<span class="interim-text">${interimTranscript}</span>` : '');
+      
+      // Auto-scroll
+      const box = document.getElementById('transcriptBox');
+      box.scrollTop = box.scrollHeight;
+    };
+
+    recognition.onerror = (e) => {
+      if (e.error === 'no-speech') return; // Ignore no-speech, keep listening
+      console.error('Speech error:', e.error);
+      if (e.error === 'not-allowed') {
+        showToast('Mic permission denied. Allow it in browser settings.');
+        stopRecording();
+      }
+    };
+
+    recognition.onend = () => {
+      if (isRecording) {
+        try { recognition.start(); } catch(e) { /* retry silently */ }
+      }
+    };
+
+    try {
+      recognition.start();
+    } catch(e) {
+      showToast('Could not start mic: ' + e.message);
+    }
+  }
+
+  function stopRecording() {
+    isRecording = false;
+    if (recognition) recognition.stop();
+    clearInterval(timerInterval);
+    
+    document.getElementById('micBtn').classList.remove('recording');
+    document.getElementById('micStatus').textContent = 'Recording stopped';
+    document.getElementById('micStatus').classList.remove('live');
+
+    const wordCount = finalTranscript.trim().split(/\s+/).filter(w => w).length;
+    
+    if (wordCount < 15) {
+      document.getElementById('micStatus').textContent = `Only ${wordCount} words. Speak more for a good analysis.`;
+      return;
+    }
+
+    document.getElementById('micTimer').textContent = `${wordCount} words captured`;
+    document.getElementById('analyzeBtn').style.display = 'block';
+  }
+
+  function startTimer() {
+    seconds = 0;
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      document.getElementById('micTimer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
+  }
+
+  // ===== ANALYSIS =====
+  async function analyzeTranscript() {
+    showScreen('analyzingScreen');
+    
+    const systemPrompt = isAssessment ? getAssessmentPrompt() : getFocusedPrompt();
+    
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          system: systemPrompt,
+          messages: [
+            { role: 'user', content: `Here is my spoken English transcript:\n\n"${finalTranscript.trim()}"` }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'API request failed');
+      }
+
+      const data = await response.json();
+      const text = data.content[0].text;
+      
+      // Parse JSON from response
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('Could not parse response');
+      
+      const result = JSON.parse(jsonMatch[0]);
+      displayResults(result);
+      
+    } catch (err) {
+      console.error('Analysis error:', err);
+      showScreen('practiceScreen');
+      
+      // Show error visibly on screen
+      const errMsg = err.message || 'Unknown error';
+      let hint = '';
+      if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg.includes('CORS')) {
+        hint = '\n\nThis is likely a CORS error from opening as a local file. Try: right-click the file → Open With → Chrome. Or host on GitHub Pages.';
+      } else if (errMsg.includes('401') || errMsg.includes('authentication')) {
+        hint = '\n\nYour API key might be invalid. Check it at console.anthropic.com';
+      } else if (errMsg.includes('insufficient')) {
+        hint = '\n\nNot enough credits. Add credits at console.anthropic.com/settings/billing';
+      }
+      
+      document.getElementById('transcriptBox').style.display = 'block';
+      document.getElementById('transcriptContent').innerHTML = `<div style="color: #ef4444; line-height: 1.7;">
+        <strong>Error:</strong> ${errMsg}${hint}
+        <br><br>
+        <strong>Debug:</strong> Open Chrome DevTools (F12 → Console tab) and press Analyze again to see the full error.
+      </div>`;
+      document.getElementById('analyzeBtn').style.display = 'block';
+    }
+  }
+
+  function getAssessmentPrompt() {
+    return `You are an expert English grammar coach specializing in Indian English speakers who studied in Hindi-medium schools.
+
+Analyze the transcript for ALL grammar patterns. Focus especially on:
+1. Tense Mixing (using wrong tenses, mixing past/present/future)
+2. Missing Articles (missing or wrong use of a/an/the)
+3. Plural Errors (wrong singular/plural forms)
+4. Hindi Filler Words (overuse of "actually", "basically", "only", "itself", "na", "means")
+5. Subject-Verb Agreement (e.g., "he don't" instead of "he doesn't")
+6. Preposition Errors (wrong prepositions)
+
+Respond ONLY with valid JSON (no markdown, no backticks):
+{
+  "score": <number 1-10>,
+  "is_assessment": true,
+  "corrections": [
+    {
+      "wrong": "<exact phrase they said>",
+      "correct": "<corrected version>",
+      "rule": "<brief grammar rule explanation>"
+    }
+  ],
+  "positive": "<one specific thing they did well with an example from their speech>",
+  "patterns": [
+    {
+      "name": "<pattern name>",
+      "frequency": "high|medium|low",
+      "examples": ["<example from transcript>"]
+    }
+  ],
+  "first_focus": "<the pattern name with highest frequency — this becomes their first practice area>",
+  "homework": [
+    "<specific exercise 1>",
+    "<specific exercise 2>",
+    "<specific exercise 3>"
+  ]
+}
+
+Be encouraging but honest. Find at least 3 corrections if they exist. If the speech is very short, still do your best analysis.`;
+  }
+
+  function getFocusedPrompt() {
+    return `You are an expert English grammar coach. The student is working on ONE specific pattern: "${currentPattern}"
+
+Analyze the transcript ONLY for this pattern. Ignore other grammar issues for now.
+
+Their streak: ${streakCount}/3 consecutive perfect scores needed to unlock next topic.
+
+Respond ONLY with valid JSON (no markdown, no backticks):
+{
+  "score": <number 1-10, be strict — 10 means ZERO errors in this pattern>,
+  "is_assessment": false,
+  "pattern": "${currentPattern}",
+  "corrections": [
+    {
+      "wrong": "<exact phrase with the error>",
+      "correct": "<corrected version>",
+      "rule": "<brief explanation specific to ${currentPattern}>"
+    }
+  ],
+  "positive": "<one specific thing they did well, with example>",
+  "tip": "<one actionable tip to improve this specific pattern>",
+  "homework": [
+    "<practice exercise 1 focused on ${currentPattern}>",
+    "<practice exercise 2>"
+  ]
+}
+
+Be strict on scoring. 10/10 means absolutely zero errors in ${currentPattern}. Even one mistake = max 9.`;
+  }
+
+  // ===== RESULTS =====
+  function displayResults(result) {
+    showScreen('resultsScreen');
+
+    // Score
+    const score = result.score || 0;
+    const scoreEl = document.getElementById('scoreBig');
+    scoreEl.textContent = `${score}/10`;
+    scoreEl.className = 'score-big ' + (score >= 8 ? 'high' : score >= 5 ? 'mid' : 'low');
+
+    // Corrections
+    const container = document.getElementById('correctionsContainer');
+    container.innerHTML = '';
+    if (result.corrections && result.corrections.length > 0) {
+      result.corrections.forEach((c, i) => {
+        container.innerHTML += `
+          <div class="correction-card">
+            <div class="c-num">Correction ${i + 1}</div>
+            <div class="c-wrong">✗ ${c.wrong}</div>
+            <div class="c-right">✓ ${c.correct}</div>
+            <div class="c-rule">${c.rule}</div>
+          </div>
+        `;
+      });
+    }
+
+    // Positive
+    if (result.positive) {
+      document.getElementById('positiveCard').style.display = 'block';
+      document.getElementById('positiveText').textContent = result.positive;
+    }
+
+    // Assessment patterns
+    if (result.is_assessment && result.patterns) {
+      document.getElementById('patternsCard').style.display = 'block';
+      const list = document.getElementById('patternsList');
+      list.innerHTML = '';
+      result.patterns.forEach(p => {
+        const freqClass = p.frequency === 'high' ? 'high-freq' : p.frequency === 'medium' ? 'mid-freq' : 'low-freq';
+        list.innerHTML += `
+          <div class="pattern-item">
+            <span class="pat-name">${p.name}</span>
+            <span class="pat-freq ${freqClass}">${p.frequency}</span>
+          </div>
+        `;
+      });
+
+      // Set first focus pattern
+      if (result.first_focus) {
+        currentPattern = result.first_focus;
+        localStorage.setItem('ec_current_pattern', JSON.stringify(currentPattern));
+        patterns = result.patterns.map(p => p.name);
+        localStorage.setItem('ec_patterns', JSON.stringify(patterns));
+        streakCount = 0;
+        localStorage.setItem('ec_streak', '0');
+      }
+    } else {
+      document.getElementById('patternsCard').style.display = 'none';
+    }
+
+    // Streak update for focused practice
+    if (!result.is_assessment && result.score === 10) {
+      streakCount++;
+      localStorage.setItem('ec_streak', streakCount.toString());
+      
+      if (streakCount >= 3) {
+        // UNLOCKED! Move to next pattern
+        const currentIndex = patterns.indexOf(currentPattern);
+        if (currentIndex < patterns.length - 1) {
+          showToast(`🎉 ${currentPattern} MASTERED! Moving to next pattern.`);
+          currentPattern = patterns[currentIndex + 1];
+          localStorage.setItem('ec_current_pattern', JSON.stringify(currentPattern));
+          streakCount = 0;
+          localStorage.setItem('ec_streak', '0');
+        } else {
+          showToast('🏆 ALL PATTERNS MASTERED! You\'re amazing!');
+        }
+      }
+    } else if (!result.is_assessment && result.score < 10) {
+      streakCount = 0;
+      localStorage.setItem('ec_streak', '0');
+    }
+
+    // Homework
+    if (result.homework && result.homework.length > 0) {
+      document.getElementById('homeworkCard').style.display = 'block';
+      const hwList = document.getElementById('homeworkList');
+      hwList.innerHTML = result.homework.map(h => `<div class="hw-item">${h}</div>`).join('');
+    }
+
+    // Save session
+    const session = {
+      date: new Date().toISOString(),
+      pattern: isAssessment ? 'Assessment' : currentPattern,
+      score: score,
+      transcript: finalTranscript.trim(),
+      corrections: result.corrections || [],
+      isAssessment: isAssessment
+    };
+    sessionHistory.push(session);
+    localStorage.setItem('ec_sessions', JSON.stringify(sessionHistory));
+  }
+
+  function practiceAgain() {
+    showScreen('practiceScreen');
+    setupPracticeScreen();
+  }
+
+  function nextScenario() {
+    showScreen('practiceScreen');
+    setupPracticeScreen();
+  }
+
+  // ===== UTILS =====
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ===== START =====
+  init();
+</script>
+</body>
+</html>
