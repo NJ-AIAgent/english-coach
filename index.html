@@ -670,12 +670,8 @@
 
   // ===== INIT =====
   function init() {
-    apiKey = localStorage.getItem('ec_api_key') || '';
-    if (apiKey) {
-      document.getElementById('apiKeyInput').value = apiKey;
-      showScreen('practiceScreen');
-      setupPracticeScreen();
-    }
+    showScreen('practiceScreen');
+    setupPracticeScreen();
   }
 
   // ===== SCREENS =====
@@ -851,65 +847,46 @@
   }
 
   // ===== ANALYSIS =====
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWqyUv4PYnSsRWi2exFv8AW6JF_86AG9-8U4nKqVcBJNyGwHYRny8tLyfvQZRw5Bpi/exec';
+
   async function analyzeTranscript() {
     showScreen('analyzingScreen');
     
     const systemPrompt = isAssessment ? getAssessmentPrompt() : getFocusedPrompt();
     
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 2000,
-          system: systemPrompt,
-          messages: [
-            { role: 'user', content: `Here is my spoken English transcript:\n\n"${finalTranscript.trim()}"` }
-          ]
+          transcript: finalTranscript.trim(),
+          systemPrompt: systemPrompt
         })
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error?.message || 'API request failed');
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Apps Script error');
       }
 
-      const data = await response.json();
-      const text = data.content[0].text;
+      const text = result.data.content[0].text;
       
       // Parse JSON from response
       const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('Could not parse response');
+      if (!jsonMatch) throw new Error('Could not parse Claude response');
       
-      const result = JSON.parse(jsonMatch[0]);
-      displayResults(result);
+      const parsed = JSON.parse(jsonMatch[0]);
+      displayResults(parsed);
       
     } catch (err) {
       console.error('Analysis error:', err);
       showScreen('practiceScreen');
       
-      // Show error visibly on screen
-      const errMsg = err.message || 'Unknown error';
-      let hint = '';
-      if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg.includes('CORS')) {
-        hint = '\n\nThis is likely a CORS error from opening as a local file. Try: right-click the file → Open With → Chrome. Or host on GitHub Pages.';
-      } else if (errMsg.includes('401') || errMsg.includes('authentication')) {
-        hint = '\n\nYour API key might be invalid. Check it at console.anthropic.com';
-      } else if (errMsg.includes('insufficient')) {
-        hint = '\n\nNot enough credits. Add credits at console.anthropic.com/settings/billing';
-      }
-      
       document.getElementById('transcriptBox').style.display = 'block';
       document.getElementById('transcriptContent').innerHTML = `<div style="color: #ef4444; line-height: 1.7;">
-        <strong>Error:</strong> ${errMsg}${hint}
-        <br><br>
-        <strong>Debug:</strong> Open Chrome DevTools (F12 → Console tab) and press Analyze again to see the full error.
+        <strong>Error:</strong> ${err.message}
+        <br><br>Check browser console (F12) for details.
       </div>`;
       document.getElementById('analyzeBtn').style.display = 'block';
     }
