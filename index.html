@@ -538,8 +538,20 @@
 
     <!-- Transcript -->
     <div class="transcript-box" id="transcriptBox" style="display:none;">
-      <div class="t-label">Your Speech</div>
-      <div class="t-content" id="transcriptContent"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+        <div class="t-label" style="margin-bottom:0;">Your Speech</div>
+        <div style="font-size:0.65rem; color:var(--text3);">tap text to edit</div>
+      </div>
+      <div class="t-content" id="transcriptContent" contenteditable="true"></div>
+    </div>
+
+    <!-- Or Paste -->
+    <div id="pasteSection" style="margin-bottom:1.25rem;">
+      <button class="btn btn-secondary" id="pasteBtn" onclick="showPasteBox()" style="font-size:0.85rem;">📋 Paste a transcript instead</button>
+      <div id="pasteBox" style="display:none; margin-top:0.75rem;">
+        <textarea id="pasteArea" placeholder="Paste your transcript here..." style="width:100%; min-height:120px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; resize:vertical; outline:none;"></textarea>
+        <button class="btn btn-primary" onclick="usePastedTranscript()" style="margin-top:0.75rem;">Use This Transcript →</button>
+      </div>
     </div>
 
     <!-- Submit -->
@@ -736,6 +748,9 @@
     document.getElementById('micStatus').textContent = 'Tap to start speaking';
     document.getElementById('micTimer').textContent = '';
     document.getElementById('micBtn').classList.remove('recording');
+    document.getElementById('pasteBtn').style.display = '';
+    document.getElementById('pasteBox').style.display = 'none';
+    document.getElementById('pasteArea').value = '';
     finalTranscript = '';
     interimTranscript = '';
     seconds = 0;
@@ -846,10 +861,37 @@
     }, 1000);
   }
 
+  // ===== PASTE =====
+  function showPasteBox() {
+    document.getElementById('pasteBox').style.display = 'block';
+    document.getElementById('pasteBtn').style.display = 'none';
+    document.getElementById('pasteArea').focus();
+  }
+
+  function usePastedTranscript() {
+    const text = document.getElementById('pasteArea').value.trim();
+    if (text.length < 20) {
+      showToast('Too short. Paste at least a few sentences.');
+      return;
+    }
+    finalTranscript = text;
+    document.getElementById('transcriptBox').style.display = 'block';
+    document.getElementById('transcriptContent').textContent = text;
+    document.getElementById('pasteBox').style.display = 'none';
+    document.getElementById('pasteBtn').style.display = 'none';
+    document.getElementById('analyzeBtn').style.display = 'block';
+    document.getElementById('micStatus').textContent = 'Transcript pasted';
+    document.getElementById('micTimer').textContent = text.split(/\s+/).filter(w => w).length + ' words';
+  }
+
   // ===== ANALYSIS =====
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWqyUv4PYnSsRWi2exFv8AW6JF_86AG9-8U4nKqVcBJNyGwHYRny8tLyfvQZRw5Bpi/exec';
 
   async function analyzeTranscript() {
+    // Read from edited transcript content
+    const editedText = document.getElementById('transcriptContent').textContent.trim();
+    if (editedText) finalTranscript = editedText;
+
     showScreen('analyzingScreen');
     
     const systemPrompt = isAssessment ? getAssessmentPrompt() : getFocusedPrompt();
