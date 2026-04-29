@@ -872,11 +872,32 @@
 
       const text = result.data.content[0].text;
       
-      // Parse JSON from response
+      // Parse JSON from response - clean up common issues
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error('Could not parse Claude response');
       
-      const parsed = JSON.parse(jsonMatch[0]);
+      // Fix common JSON issues from Claude
+      let cleanJson = jsonMatch[0]
+        .replace(/,\s*}/g, '}')        // trailing commas before }
+        .replace(/,\s*\]/g, ']')       // trailing commas before ]
+        .replace(/[\r\n]+/g, ' ')      // newlines in strings
+        .replace(/\t/g, ' ');          // tabs
+      
+      let parsed;
+      try {
+        parsed = JSON.parse(cleanJson);
+      } catch(e) {
+        // Second attempt: try to fix unescaped quotes in strings
+        cleanJson = cleanJson.replace(/(?<=:\s*")(.*?)(?="(?:\s*[,}]))/gs, (match) => {
+          return match.replace(/(?<!\\)"/g, '\\"');
+        });
+        try {
+          parsed = JSON.parse(cleanJson);
+        } catch(e2) {
+          console.error('Raw response:', text);
+          throw new Error('JSON parse failed. Check console for raw response.');
+        }
+      }
       displayResults(parsed);
       
     } catch (err) {
@@ -903,7 +924,7 @@ Analyze the transcript for ALL grammar patterns. Focus especially on:
 5. Subject-Verb Agreement (e.g., "he don't" instead of "he doesn't")
 6. Preposition Errors (wrong prepositions)
 
-Respond ONLY with valid JSON (no markdown, no backticks):
+Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Do not use special characters or newlines inside string values. Keep all string values on a single line.
 {
   "score": <number 1-10>,
   "is_assessment": true,
@@ -922,7 +943,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
       "examples": ["<example from transcript>"]
     }
   ],
-  "first_focus": "<the pattern name with highest frequency — this becomes their first practice area>",
+  "first_focus": "<the pattern name with highest frequency>",
   "homework": [
     "<specific exercise 1>",
     "<specific exercise 2>",
@@ -940,9 +961,9 @@ Analyze the transcript ONLY for this pattern. Ignore other grammar issues for no
 
 Their streak: ${streakCount}/3 consecutive perfect scores needed to unlock next topic.
 
-Respond ONLY with valid JSON (no markdown, no backticks):
+Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
 {
-  "score": <number 1-10, be strict — 10 means ZERO errors in this pattern>,
+  "score": <number 1-10, 10 means ZERO errors in this pattern>,
   "is_assessment": false,
   "pattern": "${currentPattern}",
   "corrections": [
