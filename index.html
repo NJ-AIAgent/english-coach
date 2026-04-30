@@ -920,27 +920,17 @@
         } else {
           finalTranscript = sessionTranscript;
         }
+        sessionTranscript = '';
       }
 
       if (isRecording) {
-        if (isMobile) {
-          // On mobile, don't auto-restart (causes popup + duplicates)
-          // Show a resume button instead
-          document.getElementById('micStatus').textContent = '⏸️ Paused — tap mic to continue';
-          document.getElementById('micStatus').classList.remove('live');
-          document.getElementById('micBtn').classList.remove('recording');
-          isRecording = false;
-          
-          // Show analyze if we have enough words
-          const wordCount = finalTranscript.trim().split(/\s+/).filter(w => w).length;
-          if (wordCount >= 15) {
-            document.getElementById('analyzeBtn').style.display = 'block';
-            document.getElementById('micTimer').textContent = `${wordCount} words captured`;
+        // Auto-restart on both mobile and desktop
+        // Small delay on mobile to avoid rapid-fire restarts
+        setTimeout(() => {
+          if (isRecording) {
+            try { recognition.start(); } catch(e) { /* retry silently */ }
           }
-        } else {
-          // Desktop: auto-restart is fine
-          try { recognition.start(); } catch(e) { /* retry silently */ }
-        }
+        }, isMobile ? 300 : 0);
       }
     };
 
