@@ -460,6 +460,28 @@
   }
   .homework-card .hw-item:last-child { border-bottom: none; }
 
+  /* Corrected Speech */
+  .corrected-speech-card {
+    background: var(--surface);
+    border: 1px solid var(--accent-mid);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .corrected-speech-card .cs-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+  .corrected-speech-card p {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.75;
+  }
+
   /* Button Row */
   .btn-row {
     display: flex;
@@ -581,6 +603,12 @@
     <div class="positive-card" id="positiveCard" style="display:none;">
       <div class="p-label">✓ What you did well</div>
       <p id="positiveText"></p>
+    </div>
+
+    <!-- Corrected Speech -->
+    <div class="corrected-speech-card" id="correctedSpeechCard" style="display:none;">
+      <div class="cs-title">✨ How a fluent speaker would say it</div>
+      <p id="correctedSpeechText"></p>
     </div>
 
     <!-- Patterns (Assessment only) -->
@@ -956,28 +984,34 @@
   }
 
   function getAssessmentPrompt() {
-    return `You are an expert English grammar coach specializing in Indian English speakers who studied in Hindi-medium schools.
+    return `You are an advanced English fluency coach. Your student is an Indian professional who studied in a Hindi-medium school. She has strong communication skills and tonality — grammar and filler words are the only gaps. Your goal is to make her sound like a polished, fluent English speaker.
 
-Analyze the transcript for ALL grammar patterns. Focus especially on:
-1. Tense Mixing (using wrong tenses, mixing past/present/future)
-2. Missing Articles (missing or wrong use of a/an/the)
-3. Plural Errors (wrong singular/plural forms)
-4. Hindi Filler Words (overuse of "actually", "basically", "only", "itself", "na", "means")
-5. Subject-Verb Agreement (e.g., "he don't" instead of "he doesn't")
-6. Preposition Errors (wrong prepositions)
+Analyze the transcript for ALL issues. Be thorough:
 
-Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Do not use special characters or newlines inside string values. Keep all string values on a single line.
+1. Tense Mixing (switching between past/present/future incorrectly)
+2. Missing Articles (missing or wrong a/an/the)
+3. Plural Errors (wrong singular/plural)
+4. Filler Words — Flag ALL of these: "just", "like", "actually", "basically", "so" (at start of sentence), "only", "itself", "na", "means", "you know", "right", "I think" (when used as filler, not genuine thought). In the corrected version, REMOVE them entirely or replace with better phrasing.
+5. Subject-Verb Agreement
+6. Preposition Errors
+7. Run-on Sentences (missing punctuation, thoughts running together)
+8. Word Choice (informal or imprecise words that could be better)
+9. Sentence Structure (awkward phrasing that a fluent speaker would say differently)
+
+IMPORTANT: In every correction, the corrected version should sound like how an educated, fluent English speaker would naturally say it — not just a grammar fix. Remove all unnecessary fillers. Restructure awkward sentences. Make it sound polished.
+
+Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
 {
   "score": <number 1-10>,
   "is_assessment": true,
   "corrections": [
     {
       "wrong": "<exact phrase they said>",
-      "correct": "<corrected version>",
-      "rule": "<brief grammar rule explanation>"
+      "correct": "<how a fluent speaker would say this — remove fillers, fix grammar, improve word choice>",
+      "rule": "<brief explanation of what was wrong>"
     }
   ],
-  "positive": "<one specific thing they did well with an example from their speech>",
+  "positive": "<one specific thing they did well with an example>",
   "patterns": [
     {
       "name": "<pattern name>",
@@ -986,6 +1020,7 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
     }
   ],
   "first_focus": "<the pattern name with highest frequency>",
+  "corrected_speech": "<The FULL transcript rewritten as a fluent English speaker would say it. Fix ALL grammar, remove ALL fillers, improve sentence structure. Keep the same meaning and content but make it sound polished and natural.>",
   "homework": [
     "<specific exercise 1>",
     "<specific exercise 2>",
@@ -993,37 +1028,40 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   ]
 }
 
-Be encouraging but honest. Find at least 3 corrections if they exist. If the speech is very short, still do your best analysis.`;
+Find at least 5 corrections if they exist. Be thorough — catch every filler word, every grammar slip.`;
   }
 
   function getFocusedPrompt() {
-    return `You are an expert English grammar coach. The student is working on ONE specific pattern: "${currentPattern}"
+    return `You are an advanced English fluency coach. The student is working on: "${currentPattern}"
 
-Analyze the transcript ONLY for this pattern. Ignore other grammar issues for now.
+Analyze the transcript primarily for this pattern, but ALSO flag any filler words (just, like, actually, basically, so, only, itself, na, means, you know, right). Fillers are always flagged regardless of the current pattern.
 
 Their streak: ${streakCount}/3 consecutive perfect scores needed to unlock next topic.
 
+In every correction, the corrected version should sound like how an educated, fluent English speaker would naturally say it. Remove all fillers. Make it polished.
+
 Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
 {
-  "score": <number 1-10, 10 means ZERO errors in this pattern>,
+  "score": <number 1-10, 10 means ZERO errors in this pattern AND zero fillers>,
   "is_assessment": false,
   "pattern": "${currentPattern}",
   "corrections": [
     {
-      "wrong": "<exact phrase with the error>",
-      "correct": "<corrected version>",
-      "rule": "<brief explanation specific to ${currentPattern}>"
+      "wrong": "<exact phrase with the error or filler>",
+      "correct": "<how a fluent speaker would say this>",
+      "rule": "<brief explanation>"
     }
   ],
   "positive": "<one specific thing they did well, with example>",
-  "tip": "<one actionable tip to improve this specific pattern>",
+  "tip": "<one actionable tip to improve>",
+  "corrected_speech": "<The FULL transcript rewritten as a fluent speaker would say it. Fix the target pattern, remove ALL fillers, improve flow. Same meaning, polished delivery.>",
   "homework": [
-    "<practice exercise 1 focused on ${currentPattern}>",
+    "<practice exercise 1>",
     "<practice exercise 2>"
   ]
 }
 
-Be strict on scoring. 10/10 means absolutely zero errors in ${currentPattern}. Even one mistake = max 9.`;
+Be strict. 10/10 means zero errors in ${currentPattern} AND zero filler words. Even one slip = max 9.`;
   }
 
   // ===== RESULTS =====
@@ -1056,6 +1094,14 @@ Be strict on scoring. 10/10 means absolutely zero errors in ${currentPattern}. E
     if (result.positive) {
       document.getElementById('positiveCard').style.display = 'block';
       document.getElementById('positiveText').textContent = result.positive;
+    }
+
+    // Corrected Speech
+    if (result.corrected_speech) {
+      document.getElementById('correctedSpeechCard').style.display = 'block';
+      document.getElementById('correctedSpeechText').textContent = result.corrected_speech;
+    } else {
+      document.getElementById('correctedSpeechCard').style.display = 'none';
     }
 
     // Assessment patterns
