@@ -840,6 +840,8 @@
   }
 
   // ===== MIC =====
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
   function toggleMic() {
     if (isRecording) {
       stopRecording();
@@ -856,12 +858,16 @@
     }
 
     recognition = new SR();
-    recognition.continuous = true;
+    recognition.continuous = !isMobile; // Mobile doesn't handle continuous well
     recognition.interimResults = true;
     recognition.lang = 'en-IN';
 
-    finalTranscript = '';
+    // Don't reset finalTranscript on mobile — we accumulate across restarts
+    if (!isMobile || !finalTranscript) {
+      finalTranscript = '';
+    }
     interimTranscript = '';
+    let sessionTranscript = ''; // Track this session's final results
 
     recognition.onstart = () => {
       isRecording = true;
@@ -871,28 +877,34 @@
       document.getElementById('transcriptBox').style.display = 'block';
       document.getElementById('transcriptContent').classList.remove('placeholder');
       document.getElementById('analyzeBtn').style.display = 'none';
-      startTimer();
+      if (!timerInterval) startTimer();
     };
 
     recognition.onresult = (e) => {
       interimTranscript = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
+      sessionTranscript = '';
+      for (let i = 0; i < e.results.length; i++) {
         if (e.results[i].isFinal) {
-          finalTranscript += e.results[i][0].transcript + ' ';
+          sessionTranscript += e.results[i][0].transcript + ' ';
         } else {
           interimTranscript += e.results[i][0].transcript;
         }
       }
-      document.getElementById('transcriptContent').innerHTML = 
-        finalTranscript + (interimTranscript ? `<span class="interim-text">${interimTranscript}</span>` : '');
       
-      // Auto-scroll
+      // On mobile, we accumulate; on desktop, sessionTranscript IS the full transcript
+      const displayText = isMobile 
+        ? finalTranscript + sessionTranscript 
+        : sessionTranscript;
+      
+      document.getElementById('transcriptContent').innerHTML = 
+        displayText + (interimTranscript ? `<span class="interim-text">${interimTranscript}</span>` : '');
+      
       const box = document.getElementById('transcriptBox');
       box.scrollTop = box.scrollHeight;
     };
 
     recognition.onerror = (e) => {
-      if (e.error === 'no-speech') return; // Ignore no-speech, keep listening
+      if (e.error === 'no-speech') return;
       console.error('Speech error:', e.error);
       if (e.error === 'not-allowed') {
         showToast('Mic permission denied. Allow it in browser settings.');
@@ -901,8 +913,34 @@
     };
 
     recognition.onend = () => {
+      // Save this session's results before potential restart
+      if (sessionTranscript) {
+        if (isMobile) {
+          finalTranscript += sessionTranscript;
+        } else {
+          finalTranscript = sessionTranscript;
+        }
+      }
+
       if (isRecording) {
-        try { recognition.start(); } catch(e) { /* retry silently */ }
+        if (isMobile) {
+          // On mobile, don't auto-restart (causes popup + duplicates)
+          // Show a resume button instead
+          document.getElementById('micStatus').textContent = '⏸️ Paused — tap mic to continue';
+          document.getElementById('micStatus').classList.remove('live');
+          document.getElementById('micBtn').classList.remove('recording');
+          isRecording = false;
+          
+          // Show analyze if we have enough words
+          const wordCount = finalTranscript.trim().split(/\s+/).filter(w => w).length;
+          if (wordCount >= 15) {
+            document.getElementById('analyzeBtn').style.display = 'block';
+            document.getElementById('micTimer').textContent = `${wordCount} words captured`;
+          }
+        } else {
+          // Desktop: auto-restart is fine
+          try { recognition.start(); } catch(e) { /* retry silently */ }
+        }
       }
     };
 
