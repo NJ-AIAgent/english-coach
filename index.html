@@ -482,6 +482,52 @@
     line-height: 1.75;
   }
 
+  /* Speaking Framework */
+  .framework-card {
+    background: var(--surface);
+    border: 1px solid #6366f1;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .framework-card .fw-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #818cf8;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .framework-card .fw-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .framework-card .fw-structure {
+    font-size: 0.82rem;
+    color: #818cf8;
+    line-height: 1.6;
+    padding: 0.6rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+  }
+  .framework-card .fw-example-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+  .framework-card .fw-example {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.75;
+  }
+
   /* Button Row */
   .btn-row {
     display: flex;
@@ -609,6 +655,15 @@
     <div class="corrected-speech-card" id="correctedSpeechCard" style="display:none;">
       <div class="cs-title">✨ How a fluent speaker would say it</div>
       <p id="correctedSpeechText"></p>
+    </div>
+
+    <!-- Speaking Framework -->
+    <div class="framework-card" id="frameworkCard" style="display:none;">
+      <div class="fw-title">🗂️ Speaking Framework</div>
+      <div class="fw-name" id="frameworkName"></div>
+      <div class="fw-structure" id="frameworkStructure"></div>
+      <div class="fw-example-label">Your answer using this framework:</div>
+      <div class="fw-example" id="frameworkExample"></div>
     </div>
 
     <!-- Patterns (Assessment only) -->
@@ -1027,6 +1082,11 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   ],
   "first_focus": "<the pattern name with highest frequency>",
   "corrected_speech": "<The FULL transcript rewritten exactly as a fluent native speaker would say it. Fix everything — grammar, fillers, word choice, sentence structure, flow. Same meaning, native-level delivery.>",
+  "speaking_framework": {
+    "name": "<framework name e.g. STAR, PREP, Past-Present-Future, Problem-Solution, Chronological, Compare-Contrast, Situation-Complication-Resolution>",
+    "structure": "<step by step breakdown of the framework e.g. Point > Reason > Example > Point>",
+    "applied_example": "<rewrite the students speech using this framework — show them exactly how their answer would sound if structured properly, in fluent English>"
+  },
   "homework": [
     "<specific exercise 1>",
     "<specific exercise 2>",
@@ -1064,6 +1124,11 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   "positive": "<one genuinely correct thing — VERIFY it has no errors>",
   "tip": "<one actionable tip to improve>",
   "corrected_speech": "<FULL transcript rewritten as a native speaker would say it. Fix everything. Same meaning, native-level delivery.>",
+  "speaking_framework": {
+    "name": "<best framework for this type of question e.g. STAR, PREP, Past-Present-Future, Problem-Solution, Chronological, Compare-Contrast, Situation-Complication-Resolution>",
+    "structure": "<step by step breakdown>",
+    "applied_example": "<rewrite the students speech using this framework in fluent English>"
+  },
   "homework": [
     "<practice exercise 1>",
     "<practice exercise 2>"
@@ -1109,6 +1174,16 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
       document.getElementById('correctedSpeechText').textContent = result.corrected_speech;
     } else {
       document.getElementById('correctedSpeechCard').style.display = 'none';
+    }
+
+    // Speaking Framework
+    if (result.speaking_framework) {
+      document.getElementById('frameworkCard').style.display = 'block';
+      document.getElementById('frameworkName').textContent = result.speaking_framework.name || '';
+      document.getElementById('frameworkStructure').textContent = result.speaking_framework.structure || '';
+      document.getElementById('frameworkExample').textContent = result.speaking_framework.applied_example || '';
+    } else {
+      document.getElementById('frameworkCard').style.display = 'none';
     }
 
     // Assessment patterns
