@@ -597,28 +597,23 @@
       <p id="scenarioText">Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?</p>
     </div>
 
-    <!-- Mic -->
-    <div class="mic-section">
-      <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙️</button>
-      <div class="mic-status" id="micStatus">Tap to start speaking</div>
-      <div class="mic-timer" id="micTimer"></div>
-    </div>
-
-    <!-- Transcript -->
-    <div class="transcript-box" id="transcriptBox" style="display:none;">
+    <!-- Input Area - Always visible -->
+    <div class="transcript-box" id="transcriptBox">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
         <div class="t-label" style="margin-bottom:0;">Your Speech</div>
-        <div style="font-size:0.65rem; color:var(--text3);">tap text to edit</div>
+        <div style="font-size:0.65rem; color:var(--text3);" id="wordCount"></div>
       </div>
-      <div class="t-content" id="transcriptContent" contenteditable="true"></div>
+      <textarea id="transcriptArea" placeholder="Start typing, use Whisper Flow, or tap the mic button below..." style="width:100%; min-height:140px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; resize:vertical; outline:none;" oninput="onTranscriptInput()"></textarea>
     </div>
 
-    <!-- Or Paste -->
-    <div id="pasteSection" style="margin-bottom:1.25rem;">
-      <button class="btn btn-secondary" id="pasteBtn" onclick="showPasteBox()" style="font-size:0.85rem;">📋 Paste a transcript instead</button>
-      <div id="pasteBox" style="display:none; margin-top:0.75rem;">
-        <textarea id="pasteArea" placeholder="Paste your transcript here..." style="width:100%; min-height:120px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; resize:vertical; outline:none;"></textarea>
-        <button class="btn btn-primary" onclick="usePastedTranscript()" style="margin-top:0.75rem;">Use This Transcript →</button>
+    <!-- Mic Button (optional - for speech-to-text) -->
+    <div class="mic-section" style="padding:1rem 0;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:1rem;">
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()" style="width:56px; height:56px; font-size:1.5rem;">🎙️</button>
+        <div style="text-align:left;">
+          <div class="mic-status" id="micStatus">Or tap mic for voice-to-text</div>
+          <div class="mic-timer" id="micTimer"></div>
+        </div>
       </div>
     </div>
 
@@ -825,18 +820,17 @@
       document.getElementById('scenarioText').textContent = currentScenario;
     }
 
-    // Reset mic area
-    document.getElementById('transcriptBox').style.display = 'none';
+    // Reset input area
+    document.getElementById('transcriptArea').value = '';
+    document.getElementById('wordCount').textContent = '';
     document.getElementById('analyzeBtn').style.display = 'none';
-    document.getElementById('micStatus').textContent = 'Tap to start speaking';
+    document.getElementById('micStatus').textContent = 'Or tap mic for voice-to-text';
     document.getElementById('micTimer').textContent = '';
     document.getElementById('micBtn').classList.remove('recording');
-    document.getElementById('pasteBtn').style.display = '';
-    document.getElementById('pasteBox').style.display = 'none';
-    document.getElementById('pasteArea').value = '';
     finalTranscript = '';
     interimTranscript = '';
     seconds = 0;
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
   }
 
   // ===== MIC =====
@@ -874,8 +868,6 @@
       document.getElementById('micBtn').classList.add('recording');
       document.getElementById('micStatus').textContent = '🔴 Listening...';
       document.getElementById('micStatus').classList.add('live');
-      document.getElementById('transcriptBox').style.display = 'block';
-      document.getElementById('transcriptContent').classList.remove('placeholder');
       document.getElementById('analyzeBtn').style.display = 'none';
       if (!timerInterval) startTimer();
     };
@@ -891,16 +883,17 @@
         }
       }
       
-      // On mobile, we accumulate; on desktop, sessionTranscript IS the full transcript
       const displayText = isMobile 
         ? finalTranscript + sessionTranscript 
         : sessionTranscript;
       
-      document.getElementById('transcriptContent').innerHTML = 
-        displayText + (interimTranscript ? `<span class="interim-text">${interimTranscript}</span>` : '');
+      document.getElementById('transcriptArea').value = displayText + interimTranscript;
       
-      const box = document.getElementById('transcriptBox');
-      box.scrollTop = box.scrollHeight;
+      // Auto-scroll textarea
+      const ta = document.getElementById('transcriptArea');
+      ta.scrollTop = ta.scrollHeight;
+      
+      updateWordCount();
     };
 
     recognition.onerror = (e) => {
@@ -945,20 +938,19 @@
     isRecording = false;
     if (recognition) recognition.stop();
     clearInterval(timerInterval);
+    timerInterval = null;
     
     document.getElementById('micBtn').classList.remove('recording');
     document.getElementById('micStatus').textContent = 'Recording stopped';
     document.getElementById('micStatus').classList.remove('live');
 
-    const wordCount = finalTranscript.trim().split(/\s+/).filter(w => w).length;
-    
-    if (wordCount < 15) {
-      document.getElementById('micStatus').textContent = `Only ${wordCount} words. Speak more for a good analysis.`;
-      return;
+    // Sync finalTranscript to textarea if mic was used
+    const ta = document.getElementById('transcriptArea');
+    if (finalTranscript && !ta.value.trim()) {
+      ta.value = finalTranscript;
     }
-
-    document.getElementById('micTimer').textContent = `${wordCount} words captured`;
-    document.getElementById('analyzeBtn').style.display = 'block';
+    
+    updateWordCount();
   }
 
   function startTimer() {
@@ -972,36 +964,28 @@
     }, 1000);
   }
 
-  // ===== PASTE =====
-  function showPasteBox() {
-    document.getElementById('pasteBox').style.display = 'block';
-    document.getElementById('pasteBtn').style.display = 'none';
-    document.getElementById('pasteArea').focus();
+  // ===== TEXT INPUT =====
+  function onTranscriptInput() {
+    updateWordCount();
   }
 
-  function usePastedTranscript() {
-    const text = document.getElementById('pasteArea').value.trim();
-    if (text.length < 20) {
-      showToast('Too short. Paste at least a few sentences.');
-      return;
-    }
-    finalTranscript = text;
-    document.getElementById('transcriptBox').style.display = 'block';
-    document.getElementById('transcriptContent').textContent = text;
-    document.getElementById('pasteBox').style.display = 'none';
-    document.getElementById('pasteBtn').style.display = 'none';
-    document.getElementById('analyzeBtn').style.display = 'block';
-    document.getElementById('micStatus').textContent = 'Transcript pasted';
-    document.getElementById('micTimer').textContent = text.split(/\s+/).filter(w => w).length + ' words';
+  function updateWordCount() {
+    const text = document.getElementById('transcriptArea').value.trim();
+    const count = text ? text.split(/\s+/).filter(w => w).length : 0;
+    document.getElementById('wordCount').textContent = count > 0 ? count + ' words' : '';
+    document.getElementById('analyzeBtn').style.display = count >= 15 ? 'block' : 'none';
   }
 
   // ===== ANALYSIS =====
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBESNHi34-dnM_PU80OwSq9rMDSzITtRyotNJd1fzPF4vTPiqCqNssK85tUlFNPKbc5A/exec';
 
   async function analyzeTranscript() {
-    // Read from edited transcript content
-    const editedText = document.getElementById('transcriptContent').textContent.trim();
-    if (editedText) finalTranscript = editedText;
+    // Read from textarea
+    finalTranscript = document.getElementById('transcriptArea').value.trim();
+    if (!finalTranscript || finalTranscript.split(/\s+/).length < 15) {
+      showToast('Speak or type at least 15 words.');
+      return;
+    }
 
     showScreen('analyzingScreen');
     
@@ -1056,12 +1040,7 @@
     } catch (err) {
       console.error('Analysis error:', err);
       showScreen('practiceScreen');
-      
-      document.getElementById('transcriptBox').style.display = 'block';
-      document.getElementById('transcriptContent').innerHTML = `<div style="color: #ef4444; line-height: 1.7;">
-        <strong>Error:</strong> ${err.message}
-        <br><br>Check browser console (F12) for details.
-      </div>`;
+      showToast('Error: ' + err.message);
       document.getElementById('analyzeBtn').style.display = 'block';
     }
   }
