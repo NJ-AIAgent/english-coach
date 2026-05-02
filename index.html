@@ -451,14 +451,101 @@
     letter-spacing: 0.08em;
     margin-bottom: 0.75rem;
   }
-  .homework-card .hw-item {
+  .hw-exercise {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .hw-exercise:last-child { border-bottom: none; }
+  .hw-exercise .hw-question {
     font-size: 0.85rem;
     color: var(--text);
     line-height: 1.6;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.6rem;
   }
-  .homework-card .hw-item:last-child { border-bottom: none; }
+  .hw-exercise textarea {
+    width: 100%;
+    min-height: 70px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    margin-bottom: 0.5rem;
+  }
+  .hw-exercise textarea:focus { border-color: var(--amber); }
+  .hw-check-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.9rem;
+    background: var(--amber-dim);
+    color: var(--amber);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .hw-check-btn:hover { background: rgba(245,158,11,0.2); }
+  .hw-feedback {
+    margin-top: 0.6rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .hw-feedback.correct {
+    display: block;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-mid);
+    color: var(--accent);
+  }
+  .hw-feedback.needs-work {
+    display: block;
+    background: var(--red-dim);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: var(--text);
+  }
+  .hw-status-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+  .hw-status-badge.done { background: var(--accent-dim); color: var(--accent); }
+  .hw-status-badge.pending { background: var(--amber-dim); color: var(--amber); }
+
+  /* Pending Homework on Practice Screen */
+  .pending-hw-card {
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .pending-hw-card .phw-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--amber);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .pending-hw-card .phw-count {
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
 
   /* Corrected Speech */
   .corrected-speech-card {
@@ -591,6 +678,13 @@
       <div class="focus-meta" id="focusMeta"></div>
     </div>
 
+    <!-- Pending Homework -->
+    <div class="pending-hw-card" id="pendingHwCard" style="display:none;">
+      <div class="phw-title">📝 Pending Homework</div>
+      <div class="phw-count" id="pendingHwCount"></div>
+      <button class="btn btn-secondary" onclick="showHomeworkScreen()" style="font-size:0.85rem;">Do Homework Now →</button>
+    </div>
+
     <!-- Scenario -->
     <div class="scenario-box" id="scenarioBox">
       <div class="scene-label">Today's Prompt</div>
@@ -669,7 +763,7 @@
 
     <!-- Homework -->
     <div class="homework-card" id="homeworkCard" style="display:none;">
-      <div class="hw-title">📝 Homework</div>
+      <div class="hw-title">📝 Homework — Do it now</div>
       <div id="homeworkList"></div>
     </div>
 
@@ -677,6 +771,20 @@
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="practiceAgain()">Practice Again</button>
       <button class="btn btn-primary" onclick="nextScenario()">Next Scenario →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: Homework -->
+  <div class="screen" id="homeworkScreen">
+    <div class="focus-card">
+      <div class="focus-label">Homework</div>
+      <div class="focus-title" id="hwScreenTitle">Practice Exercises</div>
+    </div>
+
+    <div id="hwExercisesList"></div>
+
+    <div class="btn-row" style="margin-top:1.25rem;">
+      <button class="btn btn-secondary" onclick="backFromHomework()">← Back to Practice</button>
     </div>
   </div>
 </div>
@@ -698,6 +806,7 @@
   let streakCount = parseInt(localStorage.getItem('ec_streak') || '0');
   let isAssessment = !currentPattern;
   let currentScenario = '';
+  let pendingHomework = JSON.parse(localStorage.getItem('ec_homework') || '[]');
 
   const ASSESSMENT_PROMPTS = [
     "Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?",
@@ -831,6 +940,15 @@
     interimTranscript = '';
     seconds = 0;
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+
+    // Show pending homework
+    const pending = pendingHomework.filter(h => h.status === 'pending');
+    if (pending.length > 0) {
+      document.getElementById('pendingHwCard').style.display = 'block';
+      document.getElementById('pendingHwCount').textContent = pending.length + ' exercise' + (pending.length > 1 ? 's' : '') + ' waiting for you';
+    } else {
+      document.getElementById('pendingHwCard').style.display = 'none';
+    }
   }
 
   // ===== MIC =====
@@ -1248,7 +1366,29 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
     if (result.homework && result.homework.length > 0) {
       document.getElementById('homeworkCard').style.display = 'block';
       const hwList = document.getElementById('homeworkList');
-      hwList.innerHTML = result.homework.map(h => `<div class="hw-item">${h}</div>`).join('');
+      
+      // Save to localStorage
+      const newHomework = result.homework.map((h, i) => ({
+        id: Date.now() + '_' + i,
+        exercise: h,
+        pattern: isAssessment ? (result.first_focus || 'General') : currentPattern,
+        status: 'pending',
+        answer: '',
+        feedback: '',
+        date: new Date().toISOString()
+      }));
+      pendingHomework = [...pendingHomework, ...newHomework];
+      localStorage.setItem('ec_homework', JSON.stringify(pendingHomework));
+      
+      // Render interactive homework
+      hwList.innerHTML = newHomework.map(hw => `
+        <div class="hw-exercise" id="hw_${hw.id}">
+          <div class="hw-question">${hw.exercise} <span class="hw-status-badge pending">Pending</span></div>
+          <textarea id="hwa_${hw.id}" placeholder="Type or speak your answer here...">${hw.answer}</textarea>
+          <button class="hw-check-btn" onclick="checkHomework('${hw.id}')">✓ Check My Answer</button>
+          <div class="hw-feedback" id="hwf_${hw.id}"></div>
+        </div>
+      `).join('');
     }
 
     // Save session
@@ -1272,6 +1412,113 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   function nextScenario() {
     showScreen('practiceScreen');
     setupPracticeScreen();
+  }
+
+  // ===== HOMEWORK =====
+  function showHomeworkScreen() {
+    showScreen('homeworkScreen');
+    const pending = pendingHomework.filter(h => h.status === 'pending');
+    document.getElementById('hwScreenTitle').textContent = pending.length + ' exercises pending';
+    
+    const list = document.getElementById('hwExercisesList');
+    list.innerHTML = pending.map(hw => `
+      <div class="homework-card" style="display:block;">
+        <div class="hw-exercise" id="hw_${hw.id}">
+          <div class="hw-question">${hw.exercise} <span class="hw-status-badge pending">Pending</span></div>
+          <textarea id="hwa_${hw.id}" placeholder="Type or speak your answer here...">${hw.answer || ''}</textarea>
+          <button class="hw-check-btn" onclick="checkHomework('${hw.id}')">✓ Check My Answer</button>
+          <div class="hw-feedback" id="hwf_${hw.id}"></div>
+        </div>
+      </div>
+    `).join('');
+
+    if (pending.length === 0) {
+      list.innerHTML = '<div class="focus-card"><div class="focus-title" style="text-align:center;">All homework done! 🎉</div></div>';
+    }
+  }
+
+  function backFromHomework() {
+    showScreen('practiceScreen');
+    setupPracticeScreen();
+  }
+
+  async function checkHomework(hwId) {
+    const textarea = document.getElementById('hwa_' + hwId);
+    const feedbackEl = document.getElementById('hwf_' + hwId);
+    const answer = textarea.value.trim();
+    
+    if (!answer || answer.length < 5) {
+      showToast('Write your answer first.');
+      return;
+    }
+
+    // Find the homework item
+    const hw = pendingHomework.find(h => h.id === hwId);
+    if (!hw) return;
+
+    feedbackEl.className = 'hw-feedback';
+    feedbackEl.style.display = 'block';
+    feedbackEl.style.background = 'var(--surface2)';
+    feedbackEl.style.border = '1px solid var(--border)';
+    feedbackEl.style.color = 'var(--text2)';
+    feedbackEl.textContent = 'Checking...';
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          transcript: answer,
+          systemPrompt: `You are an English grammar coach checking a homework exercise. The exercise was: "${hw.exercise}"
+
+The student's answer is below. Check it for correctness.
+
+Respond ONLY with valid JSON. No markdown, no backticks. Keep all string values on a single line.
+{
+  "correct": <true if the answer is grammatically correct and addresses the exercise, false otherwise>,
+  "feedback": "<if correct: praise specifically what they did well. if incorrect: show what was wrong, the correct version, and a brief explanation>",
+  "corrected_answer": "<the answer rewritten in perfect native-level English, or the same text if already correct>"
+}`
+        })
+      });
+
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
+
+      const text = result.data.content[0].text;
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('Could not parse response');
+
+      const cleanJson = jsonMatch[0].replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
+      const parsed = JSON.parse(cleanJson);
+
+      if (parsed.correct) {
+        feedbackEl.className = 'hw-feedback correct';
+        feedbackEl.innerHTML = '✅ ' + parsed.feedback;
+        // Update status
+        hw.status = 'done';
+        hw.answer = answer;
+        hw.feedback = parsed.feedback;
+      } else {
+        feedbackEl.className = 'hw-feedback needs-work';
+        feedbackEl.innerHTML = '❌ ' + parsed.feedback + (parsed.corrected_answer ? '<br><br><strong style="color:var(--accent);">Correct version:</strong> ' + parsed.corrected_answer : '');
+        hw.answer = answer;
+        hw.feedback = parsed.feedback;
+      }
+
+      // Update badge
+      const badge = document.querySelector('#hw_' + hwId + ' .hw-status-badge');
+      if (badge && parsed.correct) {
+        badge.className = 'hw-status-badge done';
+        badge.textContent = 'Done';
+      }
+
+      localStorage.setItem('ec_homework', JSON.stringify(pendingHomework));
+
+    } catch (err) {
+      feedbackEl.className = 'hw-feedback needs-work';
+      feedbackEl.textContent = 'Error checking: ' + err.message;
+    }
   }
 
   // ===== UTILS =====
