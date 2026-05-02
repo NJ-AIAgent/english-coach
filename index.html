@@ -376,6 +376,40 @@
     padding: 0.6rem;
     background: var(--surface2);
     border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .correction-card .c-why {
+    color: var(--amber);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: 0.6rem;
+    background: var(--amber-dim);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .correction-card .c-why-label {
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+    display: block;
+  }
+  .correction-card .c-trick {
+    color: #818cf8;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: 0.6rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 8px;
+  }
+  .correction-card .c-trick-label {
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+    display: block;
   }
 
   .positive-card {
@@ -569,6 +603,65 @@
     line-height: 1.75;
   }
 
+  /* Vocabulary Upgrades */
+  .vocab-card {
+    background: var(--surface);
+    border: 1px solid #f472b6;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .vocab-card .vocab-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #f472b6;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+  .vocab-item {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .vocab-item:last-child { border-bottom: none; }
+  .vocab-item .v-said {
+    font-size: 0.8rem;
+    color: var(--text3);
+    text-decoration: line-through;
+    margin-bottom: 0.2rem;
+  }
+  .vocab-item .v-upgrade {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f472b6;
+    margin-bottom: 0.2rem;
+  }
+  .vocab-item .v-type {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+    background: rgba(244, 114, 182, 0.12);
+    color: #f472b6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+  .vocab-item .v-meaning {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.5;
+    margin-bottom: 0.2rem;
+  }
+  .vocab-item .v-example {
+    font-size: 0.8rem;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
   /* Speaking Framework */
   .framework-card {
     background: var(--surface);
@@ -744,6 +837,12 @@
     <div class="corrected-speech-card" id="correctedSpeechCard" style="display:none;">
       <div class="cs-title">✨ How a fluent speaker would say it</div>
       <p id="correctedSpeechText"></p>
+    </div>
+
+    <!-- Vocabulary Upgrades -->
+    <div class="vocab-card" id="vocabCard" style="display:none;">
+      <div class="vocab-title">🚀 Level Up Your Vocabulary</div>
+      <div id="vocabList"></div>
     </div>
 
     <!-- Speaking Framework -->
@@ -1194,7 +1293,9 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
     {
       "wrong": "<exact phrase they said>",
       "correct": "<how a native speaker would say this>",
-      "rule": "<what type of error and why it is wrong>"
+      "rule": "<what type of error — e.g. tense mixing, missing article, filler word>",
+      "why": "<WHY the student makes this mistake. Root cause. e.g. In Hindi there is no equivalent of articles a/an/the so Hindi speakers often drop them. Or: In Hindi we use present tense to narrate past events so your brain defaults to present when telling stories. Or: This is a direct Hindi-to-English translation that does not work in English. Be specific to THIS error.>",
+      "trick": "<A short mental trick or rule to remember. e.g. If you are telling a story that already happened use ONLY past tense verbs until you reach the present moment. Or: Before every singular countable noun ask yourself - can I count it? Then it needs a or the.>"
     }
   ],
   "positive": "<one genuinely correct thing they did well — VERIFY it has no errors before praising>",
@@ -1207,6 +1308,15 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   ],
   "first_focus": "<the pattern name with highest frequency>",
   "corrected_speech": "<The FULL transcript rewritten exactly as a fluent native speaker would say it. Fix everything — grammar, fillers, word choice, sentence structure, flow. Same meaning, native-level delivery.>",
+  "vocabulary_upgrades": [
+    {
+      "what_you_said": "<the basic or wordy phrase the student used>",
+      "upgrade": "<a better way to say it — phrasal verb, idiom, collocation, or single word>",
+      "type": "<phrasal verb | idiom | collocation | one-word substitution>",
+      "meaning": "<what it means in simple English>",
+      "example": "<one example sentence using this in context>"
+    }
+  ],
   "speaking_framework": {
     "name": "<framework name e.g. STAR, PREP, Past-Present-Future, Problem-Solution, Chronological, Compare-Contrast, Situation-Complication-Resolution>",
     "structure": "<step by step breakdown of the framework e.g. Point > Reason > Example > Point>",
@@ -1243,12 +1353,23 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
     {
       "wrong": "<exact phrase with the error>",
       "correct": "<how a native speaker would say this>",
-      "rule": "<what type of error and why>"
+      "rule": "<what type of error>",
+      "why": "<WHY the student makes this mistake — root cause, Hindi interference, direct translation pattern>",
+      "trick": "<short mental trick or rule to prevent this mistake>"
     }
   ],
   "positive": "<one genuinely correct thing — VERIFY it has no errors>",
   "tip": "<one actionable tip to improve>",
   "corrected_speech": "<FULL transcript rewritten as a native speaker would say it. Fix everything. Same meaning, native-level delivery.>",
+  "vocabulary_upgrades": [
+    {
+      "what_you_said": "<basic or wordy phrase the student used>",
+      "upgrade": "<phrasal verb, idiom, collocation, or single word>",
+      "type": "<phrasal verb | idiom | collocation | one-word substitution>",
+      "meaning": "<what it means>",
+      "example": "<example sentence>"
+    }
+  ],
   "speaking_framework": {
     "name": "<best framework for this type of question e.g. STAR, PREP, Past-Present-Future, Problem-Solution, Chronological, Compare-Contrast, Situation-Complication-Resolution>",
     "structure": "<step by step breakdown>",
@@ -1282,6 +1403,8 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
             <div class="c-wrong">✗ ${c.wrong}</div>
             <div class="c-right">✓ ${c.correct}</div>
             <div class="c-rule">${c.rule}</div>
+            ${c.why ? `<div class="c-why"><span class="c-why-label">Why you made this mistake</span>${c.why}</div>` : ''}
+            ${c.trick ? `<div class="c-trick"><span class="c-trick-label">Remember this</span>${c.trick}</div>` : ''}
           </div>
         `;
       });
@@ -1299,6 +1422,21 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
       document.getElementById('correctedSpeechText').textContent = result.corrected_speech;
     } else {
       document.getElementById('correctedSpeechCard').style.display = 'none';
+    }
+
+    // Vocabulary Upgrades
+    if (result.vocabulary_upgrades && result.vocabulary_upgrades.length > 0) {
+      document.getElementById('vocabCard').style.display = 'block';
+      document.getElementById('vocabList').innerHTML = result.vocabulary_upgrades.map(v => `
+        <div class="vocab-item">
+          <div class="v-said">${v.what_you_said}</div>
+          <div class="v-upgrade">${v.upgrade} <span class="v-type">${v.type}</span></div>
+          <div class="v-meaning">${v.meaning}</div>
+          <div class="v-example">"${v.example}"</div>
+        </div>
+      `).join('');
+    } else {
+      document.getElementById('vocabCard').style.display = 'none';
     }
 
     // Speaking Framework
