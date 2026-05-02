@@ -1637,6 +1637,18 @@ Respond ONLY with valid JSON. No markdown, no backticks. Keep all string values 
         hw.status = 'done';
         hw.answer = answer;
         hw.feedback = parsed.feedback;
+
+        // Update Google Sheet
+        try {
+          fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+              type: 'homework_done',
+              exercise: hw.exercise
+            })
+          });
+        } catch(e) { /* non-fatal */ }
       } else {
         feedbackEl.className = 'hw-feedback needs-work';
         feedbackEl.innerHTML = '❌ ' + parsed.feedback + (parsed.corrected_answer ? '<br><br><strong style="color:var(--accent);">Correct version:</strong> ' + parsed.corrected_answer : '');
