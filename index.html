@@ -1281,9 +1281,10 @@ CODE-SWITCHING: If the student used Hindi words or phrases mid-sentence (e.g. "m
 
 IMPORTANT RULES:
 - Do NOT praise something that contains an error. Verify your positive feedback is genuinely correct English.
-- The corrected version must sound like how a native speaker would naturally say it — not just a grammar fix. Restructure if needed.
+- The corrected version must sound like how a native speaker would naturally say it IN CONVERSATION — not just a grammar fix. A sentence can be grammatically perfect but still sound non-native. Fix phrasing, word order, register, and flow.
 - Catch at least 5-8 issues if they exist. Be thorough. Missing an error is worse than being too strict.
-- Score strictly: 10 = flawless native-level speech, 7-9 = good with minor slips, 4-6 = clear non-native patterns, 1-3 = frequent errors.
+- Score strictly: 10 = sounds like a native speaker in conversation (not just grammatically correct), 7-9 = good with minor slips, 4-6 = clear non-native patterns, 1-3 = frequent errors.
+- CONVERSATIONAL CORRECTNESS > GRAMMATICAL CORRECTNESS. If something is grammatically correct but no native speaker would say it that way in conversation, flag it and provide the natural version.
 
 Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
 {
@@ -1607,15 +1608,26 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           transcript: answer,
-          systemPrompt: `You are an English grammar coach checking a homework exercise. The exercise was: "${hw.exercise}"
+          systemPrompt: `You are a world-class English fluency coach. The student submitted a homework exercise answer. The exercise was: "${hw.exercise}"
 
-The student's answer is below. Check it for correctness.
+Your job is to give ALL feedback in ONE pass. Do not hold anything back. The student should not need to resubmit.
+
+Check at THREE levels:
+
+LEVEL 1 — GRAMMAR: Fix any grammar errors (tense, articles, plurals, subject-verb agreement, etc.)
+
+LEVEL 2 — CONVERSATIONAL NATURALNESS: Even if grammar is correct, flag anything that sounds unnatural, stiff, or non-native. A sentence can be grammatically perfect but still sound like a non-native speaker wrote it. Fix word order, phrasing, register, and flow to sound like how a native speaker would ACTUALLY say it in real conversation.
+
+LEVEL 3 — VOCABULARY & EXPRESSION: Suggest better vocabulary, phrasal verbs, idioms, collocations, or more precise words. Show how a confident, articulate native speaker would express the same idea with richer language.
 
 Respond ONLY with valid JSON. No markdown, no backticks. Keep all string values on a single line.
 {
-  "correct": <true if the answer is grammatically correct and addresses the exercise, false otherwise>,
-  "feedback": "<if correct: praise specifically what they did well. if incorrect: show what was wrong, the correct version, and a brief explanation>",
-  "corrected_answer": "<the answer rewritten in perfect native-level English, or the same text if already correct>"
+  "correct": <true ONLY if the answer sounds like a native speaker wrote it — not just grammatically correct>,
+  "grammar_fixes": "<list all grammar corrections if any, or empty string if none>",
+  "naturalness_fixes": "<list all unnatural phrasings and how a native speaker would say them instead, or empty string if already natural>",
+  "vocabulary_upgrades": "<suggest better words, phrasal verbs, idioms, collocations where applicable, or empty string>",
+  "native_version": "<the FINAL version — how an educated native English speaker would say this exact thing in natural conversation. This should incorporate ALL fixes from all three levels. This is the gold standard the student should memorize.>",
+  "feedback": "<brief overall feedback — what was good, what needs work>"
 }`
         })
       });
@@ -1632,8 +1644,7 @@ Respond ONLY with valid JSON. No markdown, no backticks. Keep all string values 
 
       if (parsed.correct) {
         feedbackEl.className = 'hw-feedback correct';
-        feedbackEl.innerHTML = '✅ ' + parsed.feedback;
-        // Update status
+        feedbackEl.innerHTML = '✅ Sounds native!<br><br>' + parsed.feedback;
         hw.status = 'done';
         hw.answer = answer;
         hw.feedback = parsed.feedback;
@@ -1650,8 +1661,30 @@ Respond ONLY with valid JSON. No markdown, no backticks. Keep all string values 
           });
         } catch(e) { /* non-fatal */ }
       } else {
+        let feedbackHtml = '';
+        
+        if (parsed.grammar_fixes) {
+          feedbackHtml += '<div style="margin-bottom:0.6rem;"><span style="color:var(--red);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">Grammar Fixes</span><br>' + parsed.grammar_fixes + '</div>';
+        }
+        
+        if (parsed.naturalness_fixes) {
+          feedbackHtml += '<div style="margin-bottom:0.6rem;"><span style="color:var(--amber);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">Sounds Unnatural</span><br>' + parsed.naturalness_fixes + '</div>';
+        }
+        
+        if (parsed.vocabulary_upgrades) {
+          feedbackHtml += '<div style="margin-bottom:0.6rem;"><span style="color:#f472b6;font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">Vocabulary Upgrades</span><br>' + parsed.vocabulary_upgrades + '</div>';
+        }
+        
+        if (parsed.native_version) {
+          feedbackHtml += '<div style="margin-top:0.75rem;padding:0.75rem;background:var(--accent-dim);border:1px solid var(--accent-mid);border-radius:8px;"><span style="color:var(--accent);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">How a native speaker would say it</span><br><span style="color:var(--text);line-height:1.7;">' + parsed.native_version + '</span></div>';
+        }
+        
+        if (parsed.feedback) {
+          feedbackHtml += '<div style="margin-top:0.6rem;color:var(--text2);font-size:0.8rem;">' + parsed.feedback + '</div>';
+        }
+
         feedbackEl.className = 'hw-feedback needs-work';
-        feedbackEl.innerHTML = '❌ ' + parsed.feedback + (parsed.corrected_answer ? '<br><br><strong style="color:var(--accent);">Correct version:</strong> ' + parsed.corrected_answer : '');
+        feedbackEl.innerHTML = feedbackHtml;
         hw.answer = answer;
         hw.feedback = parsed.feedback;
       }
