@@ -17,6 +17,8 @@
     --red-dim: rgba(239,68,68,0.12);
     --amber: #f59e0b;
     --amber-dim: rgba(245,158,11,0.12);
+    --blue: #3b82f6;
+    --blue-dim: rgba(59,130,246,0.12);
     --text: #e8e8ed;
     --text2: #9395a5;
     --text3: #5d5f6e;
@@ -41,7 +43,6 @@
     padding: 1.5rem 1.25rem 6rem;
   }
 
-  /* Header */
   .header {
     text-align: center;
     margin-bottom: 2rem;
@@ -61,7 +62,6 @@
     font-size: 0.85rem;
   }
 
-  /* Setup Screen */
   .setup-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -88,18 +88,14 @@
     font-family: 'DM Sans', monospace;
     font-size: 0.9rem;
     outline: none;
-    transition: border-color 0.2s;
   }
-  .setup-card input:focus {
-    border-color: var(--accent);
-  }
+  .setup-card input:focus { border-color: var(--accent); }
   .setup-card .hint {
     font-size: 0.75rem;
     color: var(--text3);
     margin-top: 0.5rem;
   }
 
-  /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -115,10 +111,7 @@
     transition: all 0.2s;
     width: 100%;
   }
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-  }
+  .btn-primary { background: var(--accent); color: #000; }
   .btn-primary:hover { background: #16a34a; }
   .btn-primary:disabled {
     background: var(--surface2);
@@ -132,7 +125,52 @@
   }
   .btn-secondary:hover { background: var(--border); }
 
-  /* Current Focus Card */
+  /* Warm-up screen */
+  .warmup-card {
+    background: var(--surface);
+    border: 1px solid var(--accent-mid);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .warmup-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .warmup-concept {
+    font-family: 'Fraunces', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .warmup-block {
+    padding: 0.85rem;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .warmup-block .wb-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.35rem;
+    display: block;
+  }
+  .wb-wrong { background: var(--red-dim); color: var(--red); }
+  .wb-wrong .wb-label { color: var(--red); }
+  .wb-wrong .wb-content { color: var(--text); text-decoration: line-through; }
+  .wb-right { background: var(--accent-dim); color: var(--text); }
+  .wb-right .wb-label { color: var(--accent); }
+  .wb-watch { background: var(--amber-dim); }
+  .wb-watch .wb-label { color: var(--amber); }
+  .wb-watch .wb-content { color: var(--text); }
+
   .focus-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -174,25 +212,7 @@
     font-size: 1.1rem;
     font-weight: 700;
   }
-  .streak-dots {
-    display: flex;
-    gap: 0.35rem;
-    align-items: center;
-    margin-top: 0.15rem;
-  }
-  .streak-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--surface2);
-    border: 1.5px solid var(--text3);
-  }
-  .streak-dot.filled {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
 
-  /* Scenario Box */
   .scenario-box {
     background: var(--accent-dim);
     border: 1px solid var(--accent-mid);
@@ -214,7 +234,6 @@
     color: var(--text);
   }
 
-  /* Mic Section */
   .mic-section {
     display: flex;
     flex-direction: column;
@@ -260,16 +279,12 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Transcript Box */
   .transcript-box {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1.25rem;
     margin-bottom: 1.25rem;
-    min-height: 100px;
-    max-height: 250px;
-    overflow-y: auto;
   }
   .transcript-box .t-label {
     font-size: 0.7rem;
@@ -279,21 +294,7 @@
     letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
   }
-  .transcript-box .t-content {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--text);
-  }
-  .transcript-box .t-content.placeholder {
-    color: var(--text3);
-    font-style: italic;
-  }
-  .interim-text {
-    color: var(--text3);
-    font-style: italic;
-  }
 
-  /* Loading */
   .analyzing {
     text-align: center;
     padding: 3rem 1rem;
@@ -313,21 +314,34 @@
     font-size: 0.9rem;
   }
 
-  /* Results */
-  .results-section {
-    margin-bottom: 1.5rem;
+  /* Two-score display */
+  .scores-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
   }
   .score-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 1.25rem;
     text-align: center;
-    margin-bottom: 1.25rem;
+  }
+  .score-card.concept-card {
+    border-color: var(--blue);
+  }
+  .score-card .score-tiny-label {
+    font-size: 0.65rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
   }
   .score-big {
     font-family: 'Fraunces', serif;
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     line-height: 1;
     margin-bottom: 0.25rem;
@@ -335,9 +349,48 @@
   .score-big.high { color: var(--accent); }
   .score-big.mid { color: var(--amber); }
   .score-big.low { color: var(--red); }
-  .score-label {
-    font-size: 0.8rem;
+  .score-sublabel {
+    font-size: 0.7rem;
     color: var(--text2);
+  }
+
+  .mastery-progress {
+    background: var(--surface);
+    border: 1px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+  .mastery-progress .mp-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .mastery-progress .mp-text {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .mastery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+  }
+  .mastery-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1.5px solid var(--text3);
+  }
+  .mastery-dot.filled {
+    background: var(--blue);
+    border-color: var(--blue);
   }
 
   .correction-card {
@@ -387,7 +440,8 @@
     border-radius: 8px;
     margin-bottom: 0.5rem;
   }
-  .correction-card .c-why-label {
+  .correction-card .c-why-label,
+  .correction-card .c-trick-label {
     font-weight: 700;
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -402,14 +456,6 @@
     padding: 0.6rem;
     background: rgba(99, 102, 241, 0.1);
     border-radius: 8px;
-  }
-  .correction-card .c-trick-label {
-    font-weight: 700;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.2rem;
-    display: block;
   }
 
   .positive-card {
@@ -433,7 +479,6 @@
     line-height: 1.55;
   }
 
-  /* Patterns (Assessment) */
   .patterns-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -469,119 +514,6 @@
   .pat-freq.mid-freq { background: var(--amber-dim); color: var(--amber); }
   .pat-freq.low-freq { background: var(--accent-dim); color: var(--accent); }
 
-  /* Homework */
-  .homework-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-  .homework-card .hw-title {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--amber);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.75rem;
-  }
-  .hw-exercise {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .hw-exercise:last-child { border-bottom: none; }
-  .hw-exercise .hw-question {
-    font-size: 0.85rem;
-    color: var(--text);
-    line-height: 1.6;
-    margin-bottom: 0.6rem;
-  }
-  .hw-exercise textarea {
-    width: 100%;
-    min-height: 70px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    line-height: 1.6;
-    resize: vertical;
-    outline: none;
-    margin-bottom: 0.5rem;
-  }
-  .hw-exercise textarea:focus { border-color: var(--amber); }
-  .hw-check-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.45rem 0.9rem;
-    background: var(--amber-dim);
-    color: var(--amber);
-    border: 1px solid rgba(245,158,11,0.3);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .hw-check-btn:hover { background: rgba(245,158,11,0.2); }
-  .hw-feedback {
-    margin-top: 0.6rem;
-    padding: 0.75rem;
-    border-radius: 8px;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    display: none;
-  }
-  .hw-feedback.correct {
-    display: block;
-    background: var(--accent-dim);
-    border: 1px solid var(--accent-mid);
-    color: var(--accent);
-  }
-  .hw-feedback.needs-work {
-    display: block;
-    background: var(--red-dim);
-    border: 1px solid rgba(239,68,68,0.3);
-    color: var(--text);
-  }
-  .hw-status-badge {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 0.15rem 0.5rem;
-    border-radius: 12px;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-  }
-  .hw-status-badge.done { background: var(--accent-dim); color: var(--accent); }
-  .hw-status-badge.pending { background: var(--amber-dim); color: var(--amber); }
-
-  /* Pending Homework on Practice Screen */
-  .pending-hw-card {
-    background: var(--surface);
-    border: 1px solid var(--amber);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-  .pending-hw-card .phw-title {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--amber);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 0.5rem;
-  }
-  .pending-hw-card .phw-count {
-    font-size: 0.85rem;
-    color: var(--text);
-    margin-bottom: 0.75rem;
-  }
-
-  /* Corrected Speech */
   .corrected-speech-card {
     background: var(--surface);
     border: 1px solid var(--accent-mid);
@@ -603,7 +535,6 @@
     line-height: 1.75;
   }
 
-  /* Vocabulary Upgrades */
   .vocab-card {
     background: var(--surface);
     border: 1px solid #f472b6;
@@ -662,7 +593,6 @@
     line-height: 1.5;
   }
 
-  /* Speaking Framework */
   .framework-card {
     background: var(--surface);
     border: 1px solid #6366f1;
@@ -708,7 +638,6 @@
     line-height: 1.75;
   }
 
-  /* Button Row */
   .btn-row {
     display: flex;
     gap: 0.75rem;
@@ -716,11 +645,9 @@
   }
   .btn-row .btn { flex: 1; }
 
-  /* Screens */
   .screen { display: none; }
   .screen.active { display: block; }
 
-  /* Toast */
   .toast {
     position: fixed;
     bottom: 2rem;
@@ -739,7 +666,6 @@
   }
   .toast.show { opacity: 1; }
 
-  /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
@@ -753,7 +679,7 @@
   </div>
 
   <!-- SCREEN: Setup -->
-  <div class="screen active" id="setupScreen">
+  <div class="screen" id="setupScreen">
     <div class="setup-card">
       <label>Claude API Key</label>
       <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off">
@@ -762,29 +688,52 @@
     <button class="btn btn-primary" id="startBtn" onclick="saveKeyAndStart()">Start Coaching →</button>
   </div>
 
+  <!-- SCREEN: Loading concept -->
+  <div class="screen" id="loadingConceptScreen">
+    <div class="analyzing">
+      <div class="spinner"></div>
+      <p>Picking today's concept and prompt...</p>
+    </div>
+  </div>
+
+  <!-- SCREEN: Warm-up (shown when there's a target concept) -->
+  <div class="screen" id="warmupScreen">
+    <div class="warmup-card">
+      <div class="warmup-label">🎯 Today we're working on</div>
+      <div class="warmup-concept" id="warmupConcept">—</div>
+
+      <div class="warmup-block wb-wrong" id="warmupWrongBlock" style="display:none;">
+        <span class="wb-label">Last time you said</span>
+        <div class="wb-content" id="warmupWrong"></div>
+      </div>
+
+      <div class="warmup-block wb-right" id="warmupRightBlock" style="display:none;">
+        <span class="wb-label">Native form</span>
+        <div class="wb-content" id="warmupRight"></div>
+      </div>
+
+      <div class="warmup-block wb-watch" id="warmupWatchBlock">
+        <span class="wb-label">Watch for this in your answer</span>
+        <div class="wb-content" id="warmupWatch"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="proceedToPractice()">Got it, show me the prompt →</button>
+  </div>
+
   <!-- SCREEN: Practice -->
   <div class="screen" id="practiceScreen">
-    <!-- Focus Card -->
     <div class="focus-card" id="focusCard">
-      <div class="focus-label" id="focusLabel">Session 1 — Assessment</div>
-      <div class="focus-title" id="focusTitle">Speak freely on any topic</div>
+      <div class="focus-label" id="focusLabel">Today's Practice</div>
+      <div class="focus-title" id="focusTitle">—</div>
       <div class="focus-meta" id="focusMeta"></div>
     </div>
 
-    <!-- Pending Homework -->
-    <div class="pending-hw-card" id="pendingHwCard" style="display:none;">
-      <div class="phw-title">📝 Pending Homework</div>
-      <div class="phw-count" id="pendingHwCount"></div>
-      <button class="btn btn-secondary" onclick="showHomeworkScreen()" style="font-size:0.85rem;">Do Homework Now →</button>
-    </div>
-
-    <!-- Scenario -->
     <div class="scenario-box" id="scenarioBox">
       <div class="scene-label">Today's Prompt</div>
-      <p id="scenarioText">Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?</p>
+      <p id="scenarioText">Loading...</p>
     </div>
 
-    <!-- Input Area - Always visible -->
     <div class="transcript-box" id="transcriptBox">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
         <div class="t-label" style="margin-bottom:0;">Your Speech</div>
@@ -793,7 +742,6 @@
       <textarea id="transcriptArea" placeholder="Start typing, use Whisper Flow, or tap the mic button below..." style="width:100%; min-height:140px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; resize:vertical; outline:none;" oninput="onTranscriptInput()"></textarea>
     </div>
 
-    <!-- Mic Button (optional - for speech-to-text) -->
     <div class="mic-section" style="padding:1rem 0;">
       <div style="display:flex; align-items:center; justify-content:center; gap:1rem;">
         <button class="mic-btn" id="micBtn" onclick="toggleMic()" style="width:56px; height:56px; font-size:1.5rem;">🎙️</button>
@@ -804,7 +752,6 @@
       </div>
     </div>
 
-    <!-- Submit -->
     <button class="btn btn-primary" id="analyzeBtn" style="display:none;" onclick="analyzeTranscript()">Analyze My Speech →</button>
   </div>
 
@@ -812,40 +759,51 @@
   <div class="screen" id="analyzingScreen">
     <div class="analyzing">
       <div class="spinner"></div>
-      <p id="analyzingText">Analyzing your speech patterns...</p>
+      <p id="analyzingText">Analyzing your speech...</p>
     </div>
   </div>
 
   <!-- SCREEN: Results -->
   <div class="screen" id="resultsScreen">
-    <!-- Score -->
-    <div class="score-card" id="scoreCard">
-      <div class="score-big" id="scoreBig">—</div>
-      <div class="score-label" id="scoreLabel">Grammar Score</div>
+
+    <!-- Two scores -->
+    <div class="scores-row" id="scoresRow">
+      <div class="score-card concept-card" id="conceptScoreCard" style="display:none;">
+        <div class="score-tiny-label">Concept Score</div>
+        <div class="score-big" id="conceptScoreBig">—</div>
+        <div class="score-sublabel" id="conceptScoreLabel">—</div>
+      </div>
+      <div class="score-card" id="overallScoreCard">
+        <div class="score-tiny-label">Overall</div>
+        <div class="score-big" id="scoreBig">—</div>
+        <div class="score-sublabel">Grammar Score</div>
+      </div>
     </div>
 
-    <!-- Corrections -->
+    <!-- Mastery progress (only when concept exists) -->
+    <div class="mastery-progress" id="masteryProgress" style="display:none;">
+      <div class="mp-label">Concept Mastery</div>
+      <div class="mp-text" id="masteryText">—</div>
+      <div class="mastery-dots" id="masteryDots"></div>
+    </div>
+
     <div id="correctionsContainer"></div>
 
-    <!-- Positive -->
     <div class="positive-card" id="positiveCard" style="display:none;">
       <div class="p-label">✓ What you did well</div>
       <p id="positiveText"></p>
     </div>
 
-    <!-- Corrected Speech -->
     <div class="corrected-speech-card" id="correctedSpeechCard" style="display:none;">
       <div class="cs-title">✨ How a fluent speaker would say it</div>
       <p id="correctedSpeechText"></p>
     </div>
 
-    <!-- Vocabulary Upgrades -->
     <div class="vocab-card" id="vocabCard" style="display:none;">
       <div class="vocab-title">🚀 Level Up Your Vocabulary</div>
       <div id="vocabList"></div>
     </div>
 
-    <!-- Speaking Framework -->
     <div class="framework-card" id="frameworkCard" style="display:none;">
       <div class="fw-title">🗂️ Speaking Framework</div>
       <div class="fw-name" id="frameworkName"></div>
@@ -854,36 +812,14 @@
       <div class="fw-example" id="frameworkExample"></div>
     </div>
 
-    <!-- Patterns (Assessment only) -->
     <div class="patterns-card" id="patternsCard" style="display:none;">
       <div class="pat-title">Weak Areas Detected</div>
       <div id="patternsList"></div>
     </div>
 
-    <!-- Homework -->
-    <div class="homework-card" id="homeworkCard" style="display:none;">
-      <div class="hw-title">📝 Homework — Do it now</div>
-      <div id="homeworkList"></div>
-    </div>
-
-    <!-- Action Buttons -->
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="practiceAgain()">Practice Again</button>
-      <button class="btn btn-primary" onclick="nextScenario()">Next Scenario →</button>
-    </div>
-  </div>
-
-  <!-- SCREEN: Homework -->
-  <div class="screen" id="homeworkScreen">
-    <div class="focus-card">
-      <div class="focus-label">Homework</div>
-      <div class="focus-title" id="hwScreenTitle">Practice Exercises</div>
-    </div>
-
-    <div id="hwExercisesList"></div>
-
-    <div class="btn-row" style="margin-top:1.25rem;">
-      <button class="btn btn-secondary" onclick="backFromHomework()">← Back to Practice</button>
+      <button class="btn btn-primary" onclick="nextSession()">Next Session →</button>
     </div>
   </div>
 </div>
@@ -891,6 +827,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ===== CONFIG =====
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBESNHi34-dnM_PU80OwSq9rMDSzITtRyotNJd1fzPF4vTPiqCqNssK85tUlFNPKbc5A/exec';
+
   // ===== STATE =====
   let apiKey = '';
   let recognition = null;
@@ -900,76 +839,18 @@
   let timerInterval = null;
   let seconds = 0;
   let sessionHistory = JSON.parse(localStorage.getItem('ec_sessions') || '[]');
-  let patterns = JSON.parse(localStorage.getItem('ec_patterns') || '[]');
-  let currentPattern = JSON.parse(localStorage.getItem('ec_current_pattern') || 'null');
-  let streakCount = parseInt(localStorage.getItem('ec_streak') || '0');
-  let isAssessment = !currentPattern;
-  let currentScenario = '';
-  let pendingHomework = JSON.parse(localStorage.getItem('ec_homework') || '[]');
+  let currentConcept = null; // {concept_name, correct_form, ...} or null
+  let currentPromptObj = null; // {prompt, vehicle, what_to_watch}
+  let isAssessment = false; // true only on first ever session
 
-  const ASSESSMENT_PROMPTS = [
-    "Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?",
-    "Describe your typical workday from morning to evening. What do you enjoy most and what would you change?",
-    "Tell me about a skill you learned recently. Why did you want to learn it and how did you go about it?"
-  ];
-
-  const PATTERN_SCENARIOS = {
-    "Tense Mixing": [
-      "Describe what you planned to do last weekend but couldn't finish.",
-      "Tell me about a goal you set last year. Did you achieve it?",
-      "Explain how your daily routine has changed compared to two years ago.",
-      "Tell me about a trip you were planning but had to cancel.",
-      "Describe a project that started well but then hit problems.",
-      "What were you doing at this time yesterday? What will you be doing tomorrow?",
-      "Tell me about something you learned last month that you now use daily.",
-      "Describe your career journey — where you started and where you are now."
-    ],
-    "Missing Articles": [
-      "Describe the room you are sitting in right now. What objects do you see?",
-      "Tell me about the best restaurant you've been to recently.",
-      "Explain how to make a cup of tea or coffee step by step.",
-      "Describe a phone you recently bought or want to buy.",
-      "Tell me about the city you live in. What makes it special?",
-      "Describe a book or movie that left an impression on you.",
-      "Tell me about a gadget or tool you use every day at work.",
-      "Describe the view from your window right now."
-    ],
-    "Plural Errors": [
-      "What are the three most important things in your life and why?",
-      "Tell me about the different types of people you work with.",
-      "Describe all the devices and gadgets you use daily.",
-      "What are some hobbies your friends have? How are they different from yours?",
-      "Tell me about different foods you ate this week.",
-      "Describe the teams and departments in your company.",
-      "What are the biggest challenges facing software developers today?",
-      "Tell me about the different places you have lived."
-    ],
-    "Hindi Filler Words": [
-      "Explain what you do for work to someone who knows nothing about tech.",
-      "Tell me about a difficult decision you had to make recently.",
-      "Describe why you want to improve your English speaking.",
-      "Explain a technical concept — like how the internet works — in simple terms.",
-      "Tell me about your opinion on working from home vs office.",
-      "Describe a disagreement you had and how you resolved it.",
-      "Explain your morning routine and why you designed it that way.",
-      "Tell me about something you're passionate about outside of work."
-    ],
-    "Subject-Verb Agreement": [
-      "Describe what your team does on a typical day.",
-      "Tell me about your family — what does each person do?",
-      "Explain how different apps on your phone help you daily.",
-      "Describe what happens when a customer reports a bug.",
-      "Tell me about your group of friends — what does the group enjoy doing?",
-      "Explain how your company works and what each team handles.",
-      "Describe the news stories everyone is talking about.",
-      "Tell me about the rules or habits that make your life easier."
-    ]
-  };
+  // Detect mobile
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   // ===== INIT =====
   function init() {
-    showScreen('practiceScreen');
-    setupPracticeScreen();
+    // Skip API key screen - using server-side key
+    isAssessment = sessionHistory.length === 0;
+    loadConceptAndPrompt();
   }
 
   // ===== SCREENS =====
@@ -986,49 +867,159 @@
     }
     apiKey = key;
     localStorage.setItem('ec_api_key', key);
-    showScreen('practiceScreen');
+    loadConceptAndPrompt();
+  }
+
+  // ===== LOAD CONCEPT + PROMPT FROM SERVER =====
+  async function loadConceptAndPrompt() {
+    showScreen('loadingConceptScreen');
+
+    // Step 1: get today's concept
+    let concept = null;
+    if (!isAssessment) {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ type: 'get_today_concept' })
+        });
+        const data = await res.json();
+        if (data.success && data.concept) {
+          concept = data.concept;
+        }
+      } catch(e) {
+        console.error('Concept fetch failed:', e);
+      }
+    }
+
+    currentConcept = concept;
+
+    // Step 2: generate prompt
+    if (concept) {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ type: 'generate_prompt', concept: concept })
+        });
+        const data = await res.json();
+        if (data.success && data.prompt) {
+          currentPromptObj = data.prompt;
+        }
+      } catch(e) {
+        console.error('Prompt gen failed:', e);
+      }
+
+      // Show warm-up, then practice
+      showWarmup(concept, currentPromptObj);
+    } else {
+      // No active concept - free practice or assessment
+      if (isAssessment) {
+        currentPromptObj = {
+          prompt: 'Tell me about a project you recently completed at work or in your personal life. What challenges did you face and how did you solve them?',
+          vehicle: 'assessment freetalk',
+          what_to_watch: ''
+        };
+      } else {
+        // Free talk fallback
+        try {
+          const res = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ type: 'generate_prompt', concept: null })
+          });
+          const data = await res.json();
+          if (data.success && data.prompt) {
+            currentPromptObj = data.prompt;
+          }
+        } catch(e) {}
+
+        if (!currentPromptObj) {
+          currentPromptObj = { prompt: 'Tell me about your week so far.', vehicle: 'weekly recap', what_to_watch: '' };
+        }
+      }
+      // Skip warmup, go straight to practice
+      setupPracticeScreen();
+      showScreen('practiceScreen');
+    }
+  }
+
+  function showWarmup(concept, promptObj) {
+    document.getElementById('warmupConcept').textContent = concept.concept_name;
+
+    if (concept.is_spot_check) {
+      // Silent spot check - hide details
+      document.getElementById('warmupWrongBlock').style.display = 'none';
+      document.getElementById('warmupRightBlock').style.display = 'none';
+      document.getElementById('warmupWatchBlock').style.display = 'block';
+      document.getElementById('warmupWatch').textContent = 'Just speak naturally — let your instincts take over.';
+    } else {
+      if (concept.example_wrong) {
+        document.getElementById('warmupWrongBlock').style.display = 'block';
+        document.getElementById('warmupWrong').textContent = concept.example_wrong;
+      } else {
+        document.getElementById('warmupWrongBlock').style.display = 'none';
+      }
+
+      if (concept.correct_form) {
+        document.getElementById('warmupRightBlock').style.display = 'block';
+        document.getElementById('warmupRight').textContent = concept.correct_form;
+      } else {
+        document.getElementById('warmupRightBlock').style.display = 'none';
+      }
+
+      document.getElementById('warmupWatchBlock').style.display = 'block';
+      document.getElementById('warmupWatch').textContent =
+        (promptObj && promptObj.what_to_watch) ||
+        ('Use ' + concept.concept_name + ' correctly at least once.');
+    }
+
+    showScreen('warmupScreen');
+  }
+
+  function proceedToPractice() {
     setupPracticeScreen();
+    showScreen('practiceScreen');
   }
 
   function setupPracticeScreen() {
-    isAssessment = !currentPattern;
-    
-    if (isAssessment) {
+    // Focus card
+    if (currentConcept) {
+      const labelText = currentConcept.is_spot_check
+        ? 'Spot check'
+        : 'Today\'s Focus';
+      document.getElementById('focusLabel').textContent = labelText;
+      document.getElementById('focusTitle').textContent = currentConcept.is_spot_check
+        ? 'Free conversation'
+        : currentConcept.concept_name;
+
+      const masteryDots = currentConcept.is_spot_check
+        ? ''
+        : Array(3).fill(0).map((_, i) =>
+            `<div class="mastery-dot ${i < (currentConcept.mastery_count || 0) ? 'filled' : ''}" style="display:inline-block; margin-right:4px;"></div>`
+          ).join('');
+
+      document.getElementById('focusMeta').innerHTML = currentConcept.is_spot_check
+        ? '<div class="meta-item"><span class="meta-label">Type</span><span class="meta-value" style="font-size:0.85rem;">Silent test</span></div>'
+        : `<div class="meta-item">
+             <span class="meta-label">Mastery</span>
+             <div style="margin-top:6px;">${masteryDots}</div>
+           </div>`;
+    } else if (isAssessment) {
       document.getElementById('focusLabel').textContent = 'Session 1 — Assessment';
       document.getElementById('focusTitle').textContent = 'Speak freely so I can find your patterns';
       document.getElementById('focusMeta').innerHTML = '';
-      document.getElementById('scenarioText').textContent = ASSESSMENT_PROMPTS[Math.floor(Math.random() * ASSESSMENT_PROMPTS.length)];
     } else {
-      document.getElementById('focusLabel').textContent = `Current Focus`;
-      document.getElementById('focusTitle').textContent = currentPattern;
-      
-      const dots = Array(3).fill(0).map((_, i) => 
-        `<div class="streak-dot ${i < streakCount ? 'filled' : ''}"></div>`
-      ).join('');
-      
-      const lastScore = sessionHistory.length > 0 ? sessionHistory[sessionHistory.length - 1].score : '—';
-      
-      document.getElementById('focusMeta').innerHTML = `
-        <div class="meta-item">
-          <span class="meta-label">Last Score</span>
-          <span class="meta-value">${lastScore}/10</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Streak</span>
-          <div class="streak-dots">${dots}</div>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Sessions</span>
-          <span class="meta-value">${sessionHistory.filter(s => s.pattern === currentPattern).length}</span>
-        </div>
-      `;
-
-      const scenarios = PATTERN_SCENARIOS[currentPattern] || PATTERN_SCENARIOS["Tense Mixing"];
-      currentScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
-      document.getElementById('scenarioText').textContent = currentScenario;
+      document.getElementById('focusLabel').textContent = 'Free Practice';
+      document.getElementById('focusTitle').textContent = 'No active concepts — keep speaking!';
+      document.getElementById('focusMeta').innerHTML = '';
     }
 
-    // Reset input area
+    // Prompt
+    document.getElementById('scenarioText').textContent =
+      (currentPromptObj && currentPromptObj.prompt) || 'Tell me about your week so far.';
+
+    // Reset input
     document.getElementById('transcriptArea').value = '';
     document.getElementById('wordCount').textContent = '';
     document.getElementById('analyzeBtn').style.display = 'none';
@@ -1039,20 +1030,9 @@
     interimTranscript = '';
     seconds = 0;
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-
-    // Show pending homework
-    const pending = pendingHomework.filter(h => h.status === 'pending');
-    if (pending.length > 0) {
-      document.getElementById('pendingHwCard').style.display = 'block';
-      document.getElementById('pendingHwCount').textContent = pending.length + ' exercise' + (pending.length > 1 ? 's' : '') + ' waiting for you';
-    } else {
-      document.getElementById('pendingHwCard').style.display = 'none';
-    }
   }
 
   // ===== MIC =====
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
   function toggleMic() {
     if (isRecording) {
       stopRecording();
@@ -1069,16 +1049,15 @@
     }
 
     recognition = new SR();
-    recognition.continuous = !isMobile; // Mobile doesn't handle continuous well
+    recognition.continuous = !isMobile;
     recognition.interimResults = true;
     recognition.lang = 'en-IN';
 
-    // Don't reset finalTranscript on mobile — we accumulate across restarts
     if (!isMobile || !finalTranscript) {
       finalTranscript = '';
     }
     interimTranscript = '';
-    let sessionTranscript = ''; // Track this session's final results
+    let sessionTranscript = '';
 
     recognition.onstart = () => {
       isRecording = true;
@@ -1099,17 +1078,16 @@
           interimTranscript += e.results[i][0].transcript;
         }
       }
-      
-      const displayText = isMobile 
-        ? finalTranscript + sessionTranscript 
+
+      const displayText = isMobile
+        ? finalTranscript + sessionTranscript
         : sessionTranscript;
-      
+
       document.getElementById('transcriptArea').value = displayText + interimTranscript;
-      
-      // Auto-scroll textarea
+
       const ta = document.getElementById('transcriptArea');
       ta.scrollTop = ta.scrollHeight;
-      
+
       updateWordCount();
     };
 
@@ -1123,7 +1101,6 @@
     };
 
     recognition.onend = () => {
-      // Save this session's results before potential restart
       if (sessionTranscript) {
         if (isMobile) {
           finalTranscript += sessionTranscript;
@@ -1134,11 +1111,9 @@
       }
 
       if (isRecording) {
-        // Auto-restart on both mobile and desktop
-        // Small delay on mobile to avoid rapid-fire restarts
         setTimeout(() => {
           if (isRecording) {
-            try { recognition.start(); } catch(e) { /* retry silently */ }
+            try { recognition.start(); } catch(e) {}
           }
         }, isMobile ? 300 : 0);
       }
@@ -1156,17 +1131,16 @@
     if (recognition) recognition.stop();
     clearInterval(timerInterval);
     timerInterval = null;
-    
+
     document.getElementById('micBtn').classList.remove('recording');
     document.getElementById('micStatus').textContent = 'Recording stopped';
     document.getElementById('micStatus').classList.remove('live');
 
-    // Sync finalTranscript to textarea if mic was used
     const ta = document.getElementById('transcriptArea');
     if (finalTranscript && !ta.value.trim()) {
       ta.value = finalTranscript;
     }
-    
+
     updateWordCount();
   }
 
@@ -1181,7 +1155,6 @@
     }, 1000);
   }
 
-  // ===== TEXT INPUT =====
   function onTranscriptInput() {
     updateWordCount();
   }
@@ -1194,10 +1167,7 @@
   }
 
   // ===== ANALYSIS =====
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBESNHi34-dnM_PU80OwSq9rMDSzITtRyotNJd1fzPF4vTPiqCqNssK85tUlFNPKbc5A/exec';
-
   async function analyzeTranscript() {
-    // Read from textarea
     finalTranscript = document.getElementById('transcriptArea').value.trim();
     if (!finalTranscript || finalTranscript.split(/\s+/).length < 15) {
       showToast('Speak or type at least 15 words.');
@@ -1205,43 +1175,41 @@
     }
 
     showScreen('analyzingScreen');
-    
+
     const systemPrompt = isAssessment ? getAssessmentPrompt() : getFocusedPrompt();
-    
+
     try {
       const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({
           transcript: finalTranscript.trim(),
-          systemPrompt: systemPrompt
+          systemPrompt: systemPrompt,
+          targetConcept: currentConcept
         })
       });
 
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Apps Script error');
       }
 
       const text = result.data.content[0].text;
-      
-      // Parse JSON from response - clean up common issues
+
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error('Could not parse Claude response');
-      
-      // Fix common JSON issues from Claude
+
       let cleanJson = jsonMatch[0]
-        .replace(/,\s*}/g, '}')        // trailing commas before }
-        .replace(/,\s*\]/g, ']')       // trailing commas before ]
-        .replace(/[\r\n]+/g, ' ')      // newlines in strings
-        .replace(/\t/g, ' ');          // tabs
-      
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*\]/g, ']')
+        .replace(/[\r\n]+/g, ' ')
+        .replace(/\t/g, ' ');
+
       let parsed;
       try {
         parsed = JSON.parse(cleanJson);
       } catch(e) {
-        // Second attempt: try to fix unescaped quotes in strings
         cleanJson = cleanJson.replace(/(?<=:\s*")(.*?)(?="(?:\s*[,}]))/gs, (match) => {
           return match.replace(/(?<!\\)"/g, '\\"');
         });
@@ -1249,11 +1217,11 @@
           parsed = JSON.parse(cleanJson);
         } catch(e2) {
           console.error('Raw response:', text);
-          throw new Error('JSON parse failed. Check console for raw response.');
+          throw new Error('JSON parse failed.');
         }
       }
       displayResults(parsed);
-      
+
     } catch (err) {
       console.error('Analysis error:', err);
       showScreen('practiceScreen');
@@ -1267,24 +1235,25 @@
 
 Your student is an Indian professional who wants to sound like an educated, fluent, native-level English speaker. Do NOT go easy on her. She wants brutal honesty and expert-level analysis.
 
-YOUR JOB: Analyze the transcript against the standard of a fluent, educated native English speaker. Catch EVERYTHING that a native speaker would not say. This includes but is not limited to:
+YOUR JOB: Analyze the transcript against the standard of a fluent, educated native English speaker. Catch EVERYTHING that a native speaker would not say. This includes:
 
-GRAMMAR: tense errors, subject-verb agreement, article misuse (a/an/the), plural/singular errors, preposition errors, stative verb misuse (continuous form of verbs like know, understand, believe, want, need, like, have, see, belong — these NEVER take -ing form), conditional errors, passive voice misuse, dangling modifiers, run-on sentences, sentence fragments.
+GRAMMAR: tense errors, subject-verb agreement, article misuse (a/an/the), plural/singular errors, preposition errors, stative verb misuse (continuous form of know, understand, believe, want, need, like, have, see, belong — NEVER take -ing form), conditional errors, passive voice misuse, dangling modifiers, run-on sentences, sentence fragments.
 
-FLUENCY: filler words and crutch phrases (just, like, actually, basically, so, only, itself, na, means, you know, right, I think, kind of, sort of, literally, honestly — when used as verbal padding), redundancy, wordiness, awkward phrasing, unnatural word order, direct translations from Hindi that sound wrong in English.
+FLUENCY: filler words (just, like, actually, basically, so, only, na, means, you know, right, I think, kind of, sort of, literally, honestly when used as padding), redundancy, awkward phrasing, direct Hindi-to-English translations.
 
-ADVANCED: wrong collocations (we say "make a decision" not "take a decision"), wrong register (too formal or too casual for context), missing transitions, repetitive sentence structure, vague or imprecise vocabulary where a better word exists, incorrect idiom usage, missing or misplaced punctuation that changes meaning.
+ADVANCED: wrong collocations (we say "make a decision" not "take a decision"), wrong register, vague vocabulary where a better word exists, incorrect idiom usage.
 
-SPEECH-TO-TEXT AWARENESS: This transcript comes from speech recognition which may mishear Indian names, places, and Hindi words. If you see garbled or nonsensical words, try to infer what was meant from context (e.g. "gomteswar" = Gomateshwara, a place in India). Do not flag misheard proper nouns as errors — focus on grammar and fluency issues.
+SPEECH-TO-TEXT AWARENESS: This transcript comes from speech recognition. Do not flag misheard proper nouns. Focus on grammar and fluency.
 
-CODE-SWITCHING: If the student used Hindi words or phrases mid-sentence (e.g. "matlab", "accha", "theek hai", "woh", "yaar"), flag each one as a correction and provide the English equivalent. Code-switching to Hindi means the student did not know or could not recall the English word — the coach MUST provide it. In the corrected_speech, replace ALL Hindi words with proper English.
+CODE-SWITCHING: If she used Hindi mid-sentence, flag each one and provide the English equivalent.
 
-IMPORTANT RULES:
-- Do NOT praise something that contains an error. Verify your positive feedback is genuinely correct English.
-- The corrected version must sound like how a native speaker would naturally say it IN CONVERSATION — not just a grammar fix. A sentence can be grammatically perfect but still sound non-native. Fix phrasing, word order, register, and flow.
-- Catch at least 5-8 issues if they exist. Be thorough. Missing an error is worse than being too strict.
-- Score strictly: 10 = sounds like a native speaker in conversation (not just grammatically correct), 7-9 = good with minor slips, 4-6 = clear non-native patterns, 1-3 = frequent errors.
-- CONVERSATIONAL CORRECTNESS > GRAMMATICAL CORRECTNESS. If something is grammatically correct but no native speaker would say it that way in conversation, flag it and provide the natural version.
+CONCEPT NAMING: For each correction, the "rule" field MUST be a SHORT, SPECIFIC, REUSABLE concept name in lowercase (e.g. "third conditional", "stative verb continuous form", "missing article 'the'", "filler word 'actually'", "wrong collocation: take a decision", "tense mixing: present in past narrative"). This name will be used as a key to track recurring mistakes — keep it stable across sessions for the same error type.
+
+RULES:
+- Do NOT praise something that contains an error.
+- The corrected version must sound like a native speaker — not just a grammar fix.
+- Catch at least 5-8 issues if they exist.
+- Score strictly: 10 = sounds like a native speaker in conversation. 7-9 = good with minor slips. 4-6 = clear non-native patterns. 1-3 = frequent errors.
 
 Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
 {
@@ -1292,94 +1261,103 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   "is_assessment": true,
   "corrections": [
     {
-      "wrong": "<exact phrase they said>",
+      "wrong": "<exact phrase she said>",
       "correct": "<how a native speaker would say this>",
-      "rule": "<what type of error — e.g. tense mixing, missing article, filler word>",
-      "why": "<WHY the student makes this mistake. Root cause. e.g. In Hindi there is no equivalent of articles a/an/the so Hindi speakers often drop them. Or: In Hindi we use present tense to narrate past events so your brain defaults to present when telling stories. Or: This is a direct Hindi-to-English translation that does not work in English. Be specific to THIS error.>",
-      "trick": "<A short mental trick or rule to remember. e.g. If you are telling a story that already happened use ONLY past tense verbs until you reach the present moment. Or: Before every singular countable noun ask yourself - can I count it? Then it needs a or the.>"
+      "rule": "<short specific concept name in lowercase>",
+      "why": "<why she makes this mistake — root cause, Hindi interference>",
+      "trick": "<short mental trick to remember>"
     }
   ],
-  "positive": "<one genuinely correct thing they did well — VERIFY it has no errors before praising>",
+  "positive": "<one genuinely correct thing>",
   "patterns": [
     {
-      "name": "<pattern category name>",
+      "name": "<pattern name>",
       "frequency": "high|medium|low",
-      "examples": ["<example from transcript>"]
+      "examples": ["<example>"]
     }
   ],
   "first_focus": "<the pattern name with highest frequency>",
-  "corrected_speech": "<The FULL transcript rewritten exactly as a fluent native speaker would say it. Fix everything — grammar, fillers, word choice, sentence structure, flow. Same meaning, native-level delivery.>",
+  "corrected_speech": "<full transcript rewritten as a fluent native speaker would say it>",
   "vocabulary_upgrades": [
     {
-      "what_you_said": "<the basic or wordy phrase the student used>",
-      "upgrade": "<a better way to say it — phrasal verb, idiom, collocation, or single word>",
+      "what_you_said": "<basic phrase>",
+      "upgrade": "<better way to say it>",
       "type": "<phrasal verb | idiom | collocation | one-word substitution>",
-      "meaning": "<what it means in simple English>",
-      "example": "<one example sentence using this in context>"
-    }
-  ],
-  "speaking_framework": {
-    "name": "<framework name e.g. STAR, PREP, Past-Present-Future, Problem-Solution, Chronological, Compare-Contrast, Situation-Complication-Resolution>",
-    "structure": "<step by step breakdown of the framework e.g. Point > Reason > Example > Point>",
-    "applied_example": "<rewrite the students speech using this framework — show them exactly how their answer would sound if structured properly, in fluent English>"
-  },
-  "homework": [
-    "<specific exercise 1>",
-    "<specific exercise 2>",
-    "<specific exercise 3>"
-  ]
-}`;
-  }
-
-  function getFocusedPrompt() {
-    return `You are a world-class English language coach with deep expertise in linguistics and fluency training. Your student wants to sound like an educated, native-level English speaker. Be strict and thorough.
-
-PRIMARY FOCUS: "${currentPattern}" — analyze the transcript primarily for this pattern.
-ALSO ALWAYS FLAG: filler words (just, like, actually, basically, so, only, you know, right, means, na, kind of, literally, honestly), stative verb misuse (-ing form of know, understand, believe, want, need, like, have, see, belong), wrong collocations, Hindi words used mid-sentence (provide English equivalent), and any error a native speaker would notice. The transcript comes from speech recognition — ignore garbled proper nouns but catch everything else.
-
-Their streak: ${streakCount}/3 consecutive perfect scores needed to unlock next topic.
-
-RULES:
-- Do NOT praise something that contains any error. Verify before praising.
-- Corrected version must sound like a native speaker — not just a grammar patch.
-- Catch everything. Missing an error is worse than being too strict.
-- Score strictly: 10 = zero errors in ${currentPattern} AND zero fillers AND native-level phrasing. Even one slip = max 9.
-
-Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
-{
-  "score": <number 1-10>,
-  "is_assessment": false,
-  "pattern": "${currentPattern}",
-  "corrections": [
-    {
-      "wrong": "<exact phrase with the error>",
-      "correct": "<how a native speaker would say this>",
-      "rule": "<what type of error>",
-      "why": "<WHY the student makes this mistake — root cause, Hindi interference, direct translation pattern>",
-      "trick": "<short mental trick or rule to prevent this mistake>"
-    }
-  ],
-  "positive": "<one genuinely correct thing — VERIFY it has no errors>",
-  "tip": "<one actionable tip to improve>",
-  "corrected_speech": "<FULL transcript rewritten as a native speaker would say it. Fix everything. Same meaning, native-level delivery.>",
-  "vocabulary_upgrades": [
-    {
-      "what_you_said": "<basic or wordy phrase the student used>",
-      "upgrade": "<phrasal verb, idiom, collocation, or single word>",
-      "type": "<phrasal verb | idiom | collocation | one-word substitution>",
-      "meaning": "<what it means>",
+      "meaning": "<simple meaning>",
       "example": "<example sentence>"
     }
   ],
   "speaking_framework": {
-    "name": "<best framework for this type of question e.g. STAR, PREP, Past-Present-Future, Problem-Solution, Chronological, Compare-Contrast, Situation-Complication-Resolution>",
+    "name": "<framework name e.g. STAR, PREP>",
     "structure": "<step by step breakdown>",
-    "applied_example": "<rewrite the students speech using this framework in fluent English>"
-  },
-  "homework": [
-    "<practice exercise 1>",
-    "<practice exercise 2>"
-  ]
+    "applied_example": "<rewrite using this framework>"
+  }
+}`;
+  }
+
+  function getFocusedPrompt() {
+    const conceptName = currentConcept ? currentConcept.concept_name : 'general fluency';
+    const correctForm = currentConcept ? (currentConcept.correct_form || '') : '';
+    const isSpotCheck = currentConcept && currentConcept.is_spot_check;
+
+    return `You are a world-class English language coach. Your student wants to sound like an educated, native-level English speaker. Be strict and thorough.
+
+PRIMARY TARGET CONCEPT: "${conceptName}"
+${correctForm ? 'Correct form reference: "' + correctForm + '"' : ''}
+${isSpotCheck ? 'NOTE: This is a SPOT CHECK — student was not told what concept is being tested. Score them honestly on whether they used it correctly when natural opportunities arose.' : 'NOTE: Student was explicitly told to use this concept. Score them strictly on whether they used it correctly.'}
+
+CONCEPT SCORE RULES (CRITICAL — STRICT):
+- concept_score = 10 ONLY IF: (a) the student used the target concept "${conceptName}" AT LEAST ONCE in the transcript AND (b) every use of it was correct (zero errors related to this concept).
+- concept_score = 0-6 if the student AVOIDED the concept entirely (did not use it even once when the prompt naturally called for it). Avoidance is failure.
+- concept_score = 1-7 if the student attempted the concept but made errors with it. Score based on ratio of correct to incorrect uses.
+- concept_score is INDEPENDENT of the overall score. Other mistakes in the session do NOT affect concept_score.
+- If the target concept is "general fluency" (no specific concept), set concept_score equal to score.
+
+OVERALL SCORE: Score the entire transcript as you normally would — all errors count, all fillers count, all unnatural phrasing counts. 10 = native-level. Even one slip = max 9.
+
+ALSO ALWAYS FLAG (these go in corrections, but don't affect concept_score):
+- Filler words (just, like, actually, basically, so, only, you know, right, means, na, kind of, literally, honestly)
+- Stative verb misuse (-ing form of know, understand, believe, want, need, like, have, see, belong)
+- Wrong collocations
+- Hindi words used mid-sentence (provide English equivalent)
+- Any error a native speaker would notice
+
+CONCEPT NAMING for the "rule" field: Use SHORT, SPECIFIC, REUSABLE lowercase concept names that stay stable across sessions (e.g. "third conditional", "stative verb continuous form", "missing article 'the'", "filler word 'actually'"). This is critical — these names are used as keys in a database.
+
+Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailing commas. Keep all string values on a single line.
+{
+  "score": <number 1-10 — overall score>,
+  "concept_score": <number 0-10 — score for target concept ONLY, per rules above>,
+  "is_assessment": false,
+  "pattern": "${conceptName}",
+  "concept_used_count": <how many times she used the target concept, correctly or incorrectly>,
+  "concept_correct_count": <how many times she used it correctly>,
+  "corrections": [
+    {
+      "wrong": "<exact phrase with the error>",
+      "correct": "<native version>",
+      "rule": "<short specific lowercase concept name>",
+      "why": "<root cause>",
+      "trick": "<mental trick>"
+    }
+  ],
+  "positive": "<one genuinely correct thing>",
+  "tip": "<one actionable tip>",
+  "corrected_speech": "<full native version of the transcript>",
+  "vocabulary_upgrades": [
+    {
+      "what_you_said": "<basic phrase>",
+      "upgrade": "<better version>",
+      "type": "<phrasal verb | idiom | collocation | one-word substitution>",
+      "meaning": "<meaning>",
+      "example": "<example sentence>"
+    }
+  ],
+  "speaking_framework": {
+    "name": "<framework>",
+    "structure": "<breakdown>",
+    "applied_example": "<rewrite using this framework>"
+  }
 }`;
   }
 
@@ -1387,11 +1365,55 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
   function displayResults(result) {
     showScreen('resultsScreen');
 
-    // Score
+    // Overall Score
     const score = result.score || 0;
     const scoreEl = document.getElementById('scoreBig');
     scoreEl.textContent = `${score}/10`;
     scoreEl.className = 'score-big ' + (score >= 8 ? 'high' : score >= 5 ? 'mid' : 'low');
+
+    // Concept Score (only if we had a target concept)
+    if (currentConcept && typeof result.concept_score !== 'undefined') {
+      document.getElementById('conceptScoreCard').style.display = 'block';
+      const cs = result.concept_score || 0;
+      const csEl = document.getElementById('conceptScoreBig');
+      csEl.textContent = `${cs}/10`;
+      csEl.className = 'score-big ' + (cs >= 10 ? 'high' : cs >= 5 ? 'mid' : 'low');
+
+      let csLabel = currentConcept.concept_name;
+      if (typeof result.concept_used_count !== 'undefined') {
+        csLabel += ` (used ${result.concept_correct_count || 0}/${result.concept_used_count || 0} correctly)`;
+      }
+      document.getElementById('conceptScoreLabel').textContent = csLabel;
+
+      // Mastery progress
+      document.getElementById('masteryProgress').style.display = 'block';
+      const currentMastery = currentConcept.mastery_count || 0;
+      const newMastery = cs === 10 ? Math.min(currentMastery + 1, 3) : currentMastery;
+      const masteryDots = document.getElementById('masteryDots');
+      masteryDots.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'mastery-dot ' + (i < newMastery ? 'filled' : '');
+        masteryDots.appendChild(dot);
+      }
+
+      let masteryMsg = '';
+      if (cs === 10) {
+        if (newMastery >= 3) {
+          masteryMsg = '🏆 MASTERED! Moving to spot-check watch list.';
+        } else {
+          masteryMsg = `Concept score 10/10! Mastery: ${currentMastery} → ${newMastery}. Cooldown for ${newMastery === 1 ? '2' : '4'} days.`;
+        }
+      } else if (currentConcept.is_spot_check) {
+        masteryMsg = '⚠️ Spot check failed — concept goes back to active practice.';
+      } else {
+        masteryMsg = `Concept score ${cs}/10. Stays active. Mastery: ${currentMastery}/3.`;
+      }
+      document.getElementById('masteryText').textContent = masteryMsg;
+    } else {
+      document.getElementById('conceptScoreCard').style.display = 'none';
+      document.getElementById('masteryProgress').style.display = 'none';
+    }
 
     // Corrections
     const container = document.getElementById('correctionsContainer');
@@ -1401,23 +1423,21 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
         container.innerHTML += `
           <div class="correction-card">
             <div class="c-num">Correction ${i + 1}</div>
-            <div class="c-wrong">✗ ${c.wrong}</div>
-            <div class="c-right">✓ ${c.correct}</div>
-            <div class="c-rule">${c.rule}</div>
-            ${c.why ? `<div class="c-why"><span class="c-why-label">Why you made this mistake</span>${c.why}</div>` : ''}
-            ${c.trick ? `<div class="c-trick"><span class="c-trick-label">Remember this</span>${c.trick}</div>` : ''}
+            <div class="c-wrong">✗ ${escapeHtml(c.wrong || '')}</div>
+            <div class="c-right">✓ ${escapeHtml(c.correct || '')}</div>
+            <div class="c-rule">${escapeHtml(c.rule || '')}</div>
+            ${c.why ? `<div class="c-why"><span class="c-why-label">Why you made this mistake</span>${escapeHtml(c.why)}</div>` : ''}
+            ${c.trick ? `<div class="c-trick"><span class="c-trick-label">Remember this</span>${escapeHtml(c.trick)}</div>` : ''}
           </div>
         `;
       });
     }
 
-    // Positive
     if (result.positive) {
       document.getElementById('positiveCard').style.display = 'block';
       document.getElementById('positiveText').textContent = result.positive;
     }
 
-    // Corrected Speech
     if (result.corrected_speech) {
       document.getElementById('correctedSpeechCard').style.display = 'block';
       document.getElementById('correctedSpeechText').textContent = result.corrected_speech;
@@ -1425,22 +1445,20 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
       document.getElementById('correctedSpeechCard').style.display = 'none';
     }
 
-    // Vocabulary Upgrades
     if (result.vocabulary_upgrades && result.vocabulary_upgrades.length > 0) {
       document.getElementById('vocabCard').style.display = 'block';
       document.getElementById('vocabList').innerHTML = result.vocabulary_upgrades.map(v => `
         <div class="vocab-item">
-          <div class="v-said">${v.what_you_said}</div>
-          <div class="v-upgrade">${v.upgrade} <span class="v-type">${v.type}</span></div>
-          <div class="v-meaning">${v.meaning}</div>
-          <div class="v-example">"${v.example}"</div>
+          <div class="v-said">${escapeHtml(v.what_you_said || '')}</div>
+          <div class="v-upgrade">${escapeHtml(v.upgrade || '')} <span class="v-type">${escapeHtml(v.type || '')}</span></div>
+          <div class="v-meaning">${escapeHtml(v.meaning || '')}</div>
+          <div class="v-example">"${escapeHtml(v.example || '')}"</div>
         </div>
       `).join('');
     } else {
       document.getElementById('vocabCard').style.display = 'none';
     }
 
-    // Speaking Framework
     if (result.speaking_framework) {
       document.getElementById('frameworkCard').style.display = 'block';
       document.getElementById('frameworkName').textContent = result.speaking_framework.name || '';
@@ -1450,7 +1468,6 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
       document.getElementById('frameworkCard').style.display = 'none';
     }
 
-    // Assessment patterns
     if (result.is_assessment && result.patterns) {
       document.getElementById('patternsCard').style.display = 'block';
       const list = document.getElementById('patternsList');
@@ -1459,252 +1476,52 @@ Respond ONLY with valid JSON. No markdown, no backticks, no comments, no trailin
         const freqClass = p.frequency === 'high' ? 'high-freq' : p.frequency === 'medium' ? 'mid-freq' : 'low-freq';
         list.innerHTML += `
           <div class="pattern-item">
-            <span class="pat-name">${p.name}</span>
-            <span class="pat-freq ${freqClass}">${p.frequency}</span>
+            <span class="pat-name">${escapeHtml(p.name)}</span>
+            <span class="pat-freq ${freqClass}">${escapeHtml(p.frequency)}</span>
           </div>
         `;
       });
-
-      // Set first focus pattern
-      if (result.first_focus) {
-        currentPattern = result.first_focus;
-        localStorage.setItem('ec_current_pattern', JSON.stringify(currentPattern));
-        patterns = result.patterns.map(p => p.name);
-        localStorage.setItem('ec_patterns', JSON.stringify(patterns));
-        streakCount = 0;
-        localStorage.setItem('ec_streak', '0');
-      }
     } else {
       document.getElementById('patternsCard').style.display = 'none';
     }
 
-    // Streak update for focused practice
-    if (!result.is_assessment && result.score === 10) {
-      streakCount++;
-      localStorage.setItem('ec_streak', streakCount.toString());
-      
-      if (streakCount >= 3) {
-        // UNLOCKED! Move to next pattern
-        const currentIndex = patterns.indexOf(currentPattern);
-        if (currentIndex < patterns.length - 1) {
-          showToast(`🎉 ${currentPattern} MASTERED! Moving to next pattern.`);
-          currentPattern = patterns[currentIndex + 1];
-          localStorage.setItem('ec_current_pattern', JSON.stringify(currentPattern));
-          streakCount = 0;
-          localStorage.setItem('ec_streak', '0');
-        } else {
-          showToast('🏆 ALL PATTERNS MASTERED! You\'re amazing!');
-        }
-      }
-    } else if (!result.is_assessment && result.score < 10) {
-      streakCount = 0;
-      localStorage.setItem('ec_streak', '0');
-    }
-
-    // Homework
-    if (result.homework && result.homework.length > 0) {
-      document.getElementById('homeworkCard').style.display = 'block';
-      const hwList = document.getElementById('homeworkList');
-      
-      // Save to localStorage
-      const newHomework = result.homework.map((h, i) => ({
-        id: Date.now() + '_' + i,
-        exercise: h,
-        pattern: isAssessment ? (result.first_focus || 'General') : currentPattern,
-        status: 'pending',
-        answer: '',
-        feedback: '',
-        date: new Date().toISOString()
-      }));
-      pendingHomework = [...pendingHomework, ...newHomework];
-      localStorage.setItem('ec_homework', JSON.stringify(pendingHomework));
-      
-      // Render interactive homework
-      hwList.innerHTML = newHomework.map(hw => `
-        <div class="hw-exercise" id="hw_${hw.id}">
-          <div class="hw-question">${hw.exercise} <span class="hw-status-badge pending">Pending</span></div>
-          <textarea id="hwa_${hw.id}" placeholder="Type or speak your answer here...">${hw.answer}</textarea>
-          <button class="hw-check-btn" onclick="checkHomework('${hw.id}')">✓ Check My Answer</button>
-          <div class="hw-feedback" id="hwf_${hw.id}"></div>
-        </div>
-      `).join('');
-    }
-
-    // Save session
+    // Save session locally
     const session = {
       date: new Date().toISOString(),
-      pattern: isAssessment ? 'Assessment' : currentPattern,
+      pattern: currentConcept ? currentConcept.concept_name : (isAssessment ? 'Assessment' : 'Free Talk'),
       score: score,
+      concept_score: result.concept_score,
       transcript: finalTranscript.trim(),
       corrections: result.corrections || [],
       isAssessment: isAssessment
     };
     sessionHistory.push(session);
     localStorage.setItem('ec_sessions', JSON.stringify(sessionHistory));
+    isAssessment = false; // After first session, no longer assessment
   }
 
   function practiceAgain() {
-    showScreen('practiceScreen');
+    // Same concept, new prompt
     setupPracticeScreen();
-  }
-
-  function nextScenario() {
     showScreen('practiceScreen');
-    setupPracticeScreen();
   }
 
-  // ===== HOMEWORK =====
-  function showHomeworkScreen() {
-    showScreen('homeworkScreen');
-    const pending = pendingHomework.filter(h => h.status === 'pending');
-    document.getElementById('hwScreenTitle').textContent = pending.length + ' exercises pending';
-    
-    const list = document.getElementById('hwExercisesList');
-    list.innerHTML = pending.map(hw => `
-      <div class="homework-card" style="display:block;">
-        <div class="hw-exercise" id="hw_${hw.id}">
-          <div class="hw-question">${hw.exercise} <span class="hw-status-badge pending">Pending</span></div>
-          <textarea id="hwa_${hw.id}" placeholder="Type or speak your answer here...">${hw.answer || ''}</textarea>
-          <button class="hw-check-btn" onclick="checkHomework('${hw.id}')">✓ Check My Answer</button>
-          <div class="hw-feedback" id="hwf_${hw.id}"></div>
-        </div>
-      </div>
-    `).join('');
-
-    if (pending.length === 0) {
-      list.innerHTML = '<div class="focus-card"><div class="focus-title" style="text-align:center;">All homework done! 🎉</div></div>';
-    }
-  }
-
-  function backFromHomework() {
-    showScreen('practiceScreen');
-    setupPracticeScreen();
-  }
-
-  async function checkHomework(hwId) {
-    const textarea = document.getElementById('hwa_' + hwId);
-    const feedbackEl = document.getElementById('hwf_' + hwId);
-    const answer = textarea.value.trim();
-    
-    if (!answer || answer.length < 5) {
-      showToast('Write your answer first.');
-      return;
-    }
-
-    // Find the homework item
-    const hw = pendingHomework.find(h => h.id === hwId);
-    if (!hw) return;
-
-    feedbackEl.className = 'hw-feedback';
-    feedbackEl.style.display = 'block';
-    feedbackEl.style.background = 'var(--surface2)';
-    feedbackEl.style.border = '1px solid var(--border)';
-    feedbackEl.style.color = 'var(--text2)';
-    feedbackEl.textContent = 'Checking...';
-
-    try {
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          transcript: answer,
-          systemPrompt: `You are a world-class English fluency coach. The student submitted a homework exercise answer. The exercise was: "${hw.exercise}"
-
-Your job is to give ALL feedback in ONE pass. Do not hold anything back. The student should not need to resubmit.
-
-Check at THREE levels:
-
-LEVEL 1 — GRAMMAR: Fix any grammar errors (tense, articles, plurals, subject-verb agreement, etc.)
-
-LEVEL 2 — CONVERSATIONAL NATURALNESS: Even if grammar is correct, flag anything that sounds unnatural, stiff, or non-native. A sentence can be grammatically perfect but still sound like a non-native speaker wrote it. Fix word order, phrasing, register, and flow to sound like how a native speaker would ACTUALLY say it in real conversation.
-
-LEVEL 3 — VOCABULARY & EXPRESSION: Suggest better vocabulary, phrasal verbs, idioms, collocations, or more precise words. Show how a confident, articulate native speaker would express the same idea with richer language.
-
-Respond ONLY with valid JSON. No markdown, no backticks. Keep all string values on a single line.
-{
-  "correct": <true ONLY if the answer sounds like a native speaker wrote it — not just grammatically correct>,
-  "grammar_fixes": "<list all grammar corrections if any, or empty string if none>",
-  "naturalness_fixes": "<list all unnatural phrasings and how a native speaker would say them instead, or empty string if already natural>",
-  "vocabulary_upgrades": "<suggest better words, phrasal verbs, idioms, collocations where applicable, or empty string>",
-  "native_version": "<the FINAL version — how an educated native English speaker would say this exact thing in natural conversation. This should incorporate ALL fixes from all three levels. This is the gold standard the student should memorize.>",
-  "feedback": "<brief overall feedback — what was good, what needs work>"
-}`
-        })
-      });
-
-      const result = await response.json();
-      if (!result.success) throw new Error(result.error);
-
-      const text = result.data.content[0].text;
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('Could not parse response');
-
-      const cleanJson = jsonMatch[0].replace(/,\s*}/g, '}').replace(/,\s*\]/g, ']');
-      const parsed = JSON.parse(cleanJson);
-
-      if (parsed.correct) {
-        feedbackEl.className = 'hw-feedback correct';
-        feedbackEl.innerHTML = '✅ Sounds native!<br><br>' + parsed.feedback;
-        hw.status = 'done';
-        hw.answer = answer;
-        hw.feedback = parsed.feedback;
-
-        // Update Google Sheet
-        try {
-          fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({
-              type: 'homework_done',
-              exercise: hw.exercise
-            })
-          });
-        } catch(e) { /* non-fatal */ }
-      } else {
-        let feedbackHtml = '';
-        
-        if (parsed.grammar_fixes) {
-          feedbackHtml += '<div style="margin-bottom:0.6rem;"><span style="color:var(--red);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">Grammar Fixes</span><br>' + parsed.grammar_fixes + '</div>';
-        }
-        
-        if (parsed.naturalness_fixes) {
-          feedbackHtml += '<div style="margin-bottom:0.6rem;"><span style="color:var(--amber);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">Sounds Unnatural</span><br>' + parsed.naturalness_fixes + '</div>';
-        }
-        
-        if (parsed.vocabulary_upgrades) {
-          feedbackHtml += '<div style="margin-bottom:0.6rem;"><span style="color:#f472b6;font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">Vocabulary Upgrades</span><br>' + parsed.vocabulary_upgrades + '</div>';
-        }
-        
-        if (parsed.native_version) {
-          feedbackHtml += '<div style="margin-top:0.75rem;padding:0.75rem;background:var(--accent-dim);border:1px solid var(--accent-mid);border-radius:8px;"><span style="color:var(--accent);font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">How a native speaker would say it</span><br><span style="color:var(--text);line-height:1.7;">' + parsed.native_version + '</span></div>';
-        }
-        
-        if (parsed.feedback) {
-          feedbackHtml += '<div style="margin-top:0.6rem;color:var(--text2);font-size:0.8rem;">' + parsed.feedback + '</div>';
-        }
-
-        feedbackEl.className = 'hw-feedback needs-work';
-        feedbackEl.innerHTML = feedbackHtml;
-        hw.answer = answer;
-        hw.feedback = parsed.feedback;
-      }
-
-      // Update badge
-      const badge = document.querySelector('#hw_' + hwId + ' .hw-status-badge');
-      if (badge && parsed.correct) {
-        badge.className = 'hw-status-badge done';
-        badge.textContent = 'Done';
-      }
-
-      localStorage.setItem('ec_homework', JSON.stringify(pendingHomework));
-
-    } catch (err) {
-      feedbackEl.className = 'hw-feedback needs-work';
-      feedbackEl.textContent = 'Error checking: ' + err.message;
-    }
+  async function nextSession() {
+    // Reload concept + prompt fresh
+    await loadConceptAndPrompt();
   }
 
   // ===== UTILS =====
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
